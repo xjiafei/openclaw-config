@@ -1,34 +1,4 @@
 {
   "version": 2,
-  "runs": {
-    "9e3b0b70-53d7-45a0-9e04-7eafa3abc21b": {
-      "runId": "9e3b0b70-53d7-45a0-9e04-7eafa3abc21b",
-      "childSessionKey": "agent:aifd:subagent:9de0ff2d-ac67-4dc9-a41a-a4829020e44b",
-      "requesterSessionKey": "agent:aifd:feishu:direct:ou_d49b79b91396fa749077ca978c4610a6",
-      "requesterOrigin": {
-        "channel": "feishu",
-        "to": "user:ou_d49b79b91396fa749077ca978c4610a6",
-        "accountId": "aifd2"
-      },
-      "requesterDisplayKey": "agent:aifd:feishu:direct:ou_d49b79b91396fa749077ca978c4610a6",
-      "task": "你是 AIFD 框架架构师，负责调整 aifd agent 框架设计。\n\n## 任务目标\n\n根据 ~/.openclaw/workspace-aifd/AIFD_V1_PROPOSAL.md 技术方案，重构 AIFD 框架，实现以下目标：\n\n### 1. 解耦示例项目和框架\n\n当前技术方案中 todo-system 是示例项目，需要将框架和示例项目解耦：\n- AIFD 框架层：~/.openclaw/workspace-aifd/ （负责流程编排、协同）\n- 业务项目层：用户指定的项目目录（如 /root/todo-system/ 或新建项目）\n\n### 2. 重构框架结构\n\nAIFD 框架应该包含：\n- SOUL.md：定义 AIFD agent 的核心职责\n- skills/：上下文构建、质量把关、流程编排、记忆同步\n- memory/：长期记忆\n- projects/：项目注册表（记录已知项目）\n- templates/：Claude Code 项目模板\n\n### 3. 业务项目结构（Claude Code 项目模板）\n\n每个业务项目应该是标准的 Claude Code 项目：\n```\n{project}/\n├── .claude/\n│   ├── agents/\n│   │   ├── pm-agent.md\n│   │   ├── architect-agent.md\n│   │   ├── developer-agent.md\n│   │   └── qa-agent.md\n│   ├── commands/\n│   └── skills/\n├── CLAUDE.md (动态生成)\n├── docs/specs/\n├── workspace/\n│   └── pipeline.json\n└── backend/frontend/\n```\n\n### 4. 重写 SOUL.md\n\nSOUL.md 需要包含完整的工作流程：\n1. 接收用户需求 → 记录到 workspace-aifd/requests/\n2. 判断是新项目还是已有项目\n3. 如果是新项目：\n   - 在用户目录下创建项目\n   - 按 Claude Code 项目模板初始化\n4. 驱动研发流程（需求→产品→技术→开发→测试）\n5. 关键节点请求用户审批\n6. 定期汇报进度\n7. 完成后总结经验和教训\n\n### 5. 创建必要的文件和目录\n\n请创建/更新以下文件：\n1. ~/.openclaw/workspace-aifd/SOUL.md - 重写\n2. ~/.openclaw/workspace-aifd/templates/claude-code-project/ - Claude Code 项目模板\n3. ~/.openclaw/workspace-aifd/projects/registry.json - 项目注册表\n4. ~/.openclaw/workspace-aifd/requests/ - 需求记录目录\n5. 更新相关 skills\n\n### 6. 每完成一个主要步骤，执行以下命令通知进度\n\n```bash\nopenclaw system event --text \"AIFD框架调整进度: [步骤描述]\" --mode now\n```\n\n## 约束\n- 不要修改 /root/todo-system/ 的现有内容\n- 所有框架文件使用中文\n- 保持与现有 OpenClaw 配置的兼容性",
-      "cleanup": "keep",
-      "expectsCompletionMessage": true,
-      "spawnMode": "run",
-      "label": "aifd-framework-refactor",
-      "model": "ccc/claude-opus-4-6",
-      "runTimeoutSeconds": 1800,
-      "createdAt": 1772779275109,
-      "startedAt": 1772779275203,
-      "archiveAtMs": 1772782875109,
-      "cleanupHandled": true,
-      "endedAt": 1772779495001,
-      "outcome": {
-        "status": "ok"
-      },
-      "endedReason": "subagent-complete",
-      "endedHookEmittedAt": 1772779495901,
-      "cleanupCompletedAt": 1772779495901
-    }
-  }
+  "runs": {}
 }
