@@ -37,3 +37,7 @@ node_modules/
 *.bak
 *.deleted.*
 *.reset.*
+
+# Auth profiles (包含敏感的 API keys)
+agents/*/agent/auth-profiles.json
+agents/*/auth-profiles.json
