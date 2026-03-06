@@ -1,0 +1,47 @@
+# CLAUDE.md — AIFD 任务指令
+
+> 此文件由 AIFD 框架动态生成，请勿手动编辑。
+
+## 项目概述
+- 项目：{project_name}
+- 类型：{project_type}
+- 技术栈：{tech_stack}
+
+## 当前阶段：{current_stage}
+
+### 任务目标
+{task_description}
+
+### 输入文档
+请阅读以下文件了解上下文：
+{input_files_list}
+
+### 输出要求
+请产出以下文件：
+{output_files_list}
+
+### 质量标准
+{quality_criteria}
+
+### 约束
+{constraints}
+
+## Session 连续性
+
+### 上次 Session 状态
+- 状态：{last_session_status}
+- 已完成：{completed_artifacts}
+- 未完成：{pending_work}
+
+### 修正指令
+{must_fix_list}
+
+## 相关经验
+{relevant_experience}
+
+## 编码规范
+请参考 docs/knowledges/standards/ 下的编码规范文档。
+
+## Agent 角色说明
+你是 {agent_role}，负责 {role_responsibility}。
+请在 .claude/agents/{agent_id}.md 中查看详细角色定义。

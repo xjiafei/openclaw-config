@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.2.26",
-    "lastTouchedAt": "2026-03-06T05:46:06.082Z"
+    "lastTouchedAt": "2026-03-06T06:34:25.459Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-06T05:46:06.057Z",
@@ -442,7 +442,7 @@
     "feishu": {
       "enabled": true,
       "appId": "cli_a92d7a512d795bc9",
-      "appSecret": "${FEISHU_DEFAULT_APP_SECRET}",
+      "appSecret": "bmvABV3kSjYfKjGv7MjGfhUMsZlNWcAm",
       "domain": "feishu",
       "accounts": {
         "aifd2": {

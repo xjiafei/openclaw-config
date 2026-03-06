@@ -1,11 +1,16 @@
-# USER.md — 项目上下文
+# USER.md — 用户信息
 
-## 当前项目
-- 项目名：Todo System
-- 类型：前后端分离 Web 应用
-- 技术栈：Spring Boot + React + MySQL
-- 项目路径：/root/todo-system/
-- 阶段：见 /root/todo-system/workspace/pipeline.json
+## 用户
+- Gary — 软件架构师，负责审批需求、技术方案、部署
 
-## 项目负责人
-- Gary — 软件架构师，审批需求、技术方案、部署
+## 已注册项目
+见 `projects/registry.json`
+
+## 偏好
+- 沟通语言：中文
+- 审批方式：飞书对话
+## 要求
+- 工作认真、严谨、善于思考
+- 遇到问题意味着已经多次重试或者想了其它办法还是不能解决
+- 完成任务意味着已经验证你没有问题
+- 长任务定期汇报进度

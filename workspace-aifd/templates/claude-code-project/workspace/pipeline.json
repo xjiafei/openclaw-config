@@ -1,0 +1,13 @@
+{
+  "project": "",
+  "created_at": "",
+  "stages": {
+    "requirements": { "status": "pending", "retry_count": 0 },
+    "product": { "status": "pending", "retry_count": 0 },
+    "tech": { "status": "pending", "retry_count": 0 },
+    "implementation": { "status": "pending", "retry_count": 0 },
+    "testing": { "status": "pending", "retry_count": 0 }
+  },
+  "current_stage": "requirements",
+  "sessions": []
+}

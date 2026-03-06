@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.2.26",
-    "lastTouchedAt": "2026-03-05T14:19:23.484Z"
+    "lastTouchedAt": "2026-03-06T02:42:36.191Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-04T05:52:03.918Z",
@@ -417,6 +417,15 @@
       }
     ]
   },
+  "bindings": [
+    {
+      "agentId": "aifd",
+      "match": {
+        "channel": "feishu",
+        "accountId": "aifd2"
+      }
+    }
+  ],
   "messages": {
     "ackReactionScope": "group-mentions"
   },
@@ -433,19 +442,20 @@
     "feishu": {
       "enabled": true,
       "appId": "cli_a92d7a512d795bc9",
-      "appSecret": "bmvABV3kSjYfKjGv7MjGfhUMsZlNWcAm",
+      "appSecret": "FEISHU_DEFAULT_APP_SECRET",
       "domain": "feishu",
       "groupPolicy": "open",
       "accounts": {
-        "aifd1": {
-          "appId": "cli_a92d7a512d795bc9",
-          "appSecret": "bmvABV3kSjYfKjGv7MjGfhUMsZlNWcAm",
+        "aifd2": {
+          "appId": "cli_a9225b7ce2785bd6",
+          "appSecret": "FEISHU_AIFD2_APP_SECRET",
           "connectionMode": "websocket",
           "domain": "feishu",
           "enabled": true
         }
       },
-      "allowFrom": []
+      "allowFrom": [],
+      "connectionMode": "websocket"
     }
   },
   "gateway": {

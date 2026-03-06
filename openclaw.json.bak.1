@@ -1,12 +1,12 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.2.26",
-    "lastTouchedAt": "2026-03-05T14:21:00.462Z"
+    "lastTouchedAt": "2026-03-06T05:46:06.082Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-04T05:52:03.918Z",
+    "lastRunAt": "2026-03-06T05:46:06.057Z",
     "lastRunVersion": "2026.2.26",
-    "lastRunCommand": "onboard",
+    "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "auth": {
@@ -417,15 +417,6 @@
       }
     ]
   },
-  "messages": {
-    "ackReactionScope": "group-mentions"
-  },
-  "commands": {
-    "native": "auto",
-    "nativeSkills": "auto",
-    "restart": true,
-    "ownerDisplay": "raw"
-  },
   "bindings": [
     {
       "agentId": "aifd",
@@ -435,6 +426,15 @@
       }
     }
   ],
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
   "session": {
     "dmScope": "per-channel-peer"
   },
@@ -442,19 +442,22 @@
     "feishu": {
       "enabled": true,
       "appId": "cli_a92d7a512d795bc9",
-      "appSecret": "FEISHU_DEFAULT_APP_SECRET",
+      "appSecret": "${FEISHU_DEFAULT_APP_SECRET}",
       "domain": "feishu",
-      "groupPolicy": "open",
       "accounts": {
         "aifd2": {
           "appId": "cli_a9225b7ce2785bd6",
-          "appSecret": "FEISHU_AIFD2_APP_SECRET",
+          "appSecret": "${FEISHU_AIFD2_APP_SECRET}",
           "connectionMode": "websocket",
           "domain": "feishu",
           "enabled": true
+        },
+        "default": {
+          "groupPolicy": "open",
+          "allowFrom": []
         }
       },
-      "allowFrom": []
+      "connectionMode": "websocket"
     }
   },
   "gateway": {

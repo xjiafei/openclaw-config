@@ -1,0 +1,13 @@
+{
+  "projects": [
+    {
+      "id": "todo-system",
+      "name": "Todo System",
+      "path": "/root/todo-system",
+      "techStack": "Spring Boot + React + MySQL",
+      "status": "active",
+      "createdAt": "2026-03-05",
+      "lastActivity": "2026-03-06"
+    }
+  ]
+}
