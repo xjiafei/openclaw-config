@@ -61,8 +61,9 @@
 
 调用 Claude Code 前，必须通过 `context-builder` skill：
 - 读取 pipeline 状态
-- 读取上游文档
-- 读取相关记忆和知识库
+- 注入用户需求与记忆摘要
+- 读取当前阶段对应 agent-memory 最近经验（最近 3 条）
+- 提供上游文档/代码目录路径，由 Claude Code 自行按需读取
 - 生成 CLAUDE.md 写入项目根目录
 - Git commit 存档
 
@@ -73,6 +74,15 @@
 - 文档类：完整性、一致性、可执行性（≥7分通过）
 - 代码类：编译/构建检查 + 测试运行 + 规范检查（≥7分通过）
 - 不通过时生成 must_fix 列表，注入下次 CLAUDE.md
+
+### 5.1 Docs 沉淀检查
+
+每个阶段质量门禁通过后，还必须执行 docs 沉淀检查：
+1. 检查本阶段是否有内容需要更新到 `docs/specs/` 或 `docs/knowledges/`
+2. 检查 README.md 是否需要同步更新
+3. 检查 agent 经验是否已回写到 `workspace/agent-memory/{agent-id}.md`
+4. 增量特性通过测试后，检查是否需要合并到全量 specs
+5. 规则详见项目内 `docs/DOC_GOVERNANCE.md`
 
 ### 6. 人工审批
 
@@ -95,6 +105,8 @@
 - 调用 `memory-sync` skill 记录经验
 - 成功模式和失败教训都要记录
 - 写入 `memory/YYYY-MM-DD.md`（当日日志）和 `{project}/workspace/memory.md`（项目记忆）
+- 确保各 Agent 的经验已回写到 `{project}/workspace/agent-memory/{agent-id}.md`
+- 跨环节反馈按 `agent-evolution-policy.md` 写入对应上游 agent-memory
 
 ## 项目管理
 
