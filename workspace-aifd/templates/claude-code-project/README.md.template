@@ -5,18 +5,14 @@
 ## 技术栈
 {tech_stack}
 
-## 目录结构（业务项目）
-- `.claude/`
-  - `skills/`（供用户扩展）
-  - `agents/`（pm-agent、arch-agent、be-agent、fe-agent、qa-agent、devops-agent）
-  - `commands/`（供用户扩展）
-  - `hooks/`（供用户扩展）
-- `CLAUDE.md` Claude Code 上下文文件
-- `workspace/` AI 工作区（临时文件、中间产物）
-- `docs/`
-  - `specs/` 全量规格与 featureXXX-specs
-  - `knowledges/` 模板、规范、领域知识、经验沉淀
-- `frontend/` 前端代码
-- `backend/` 后端代码
-- `testing/` 测试代码（integration/e2e/performence/reports）
-- `devops/` CI/CD 代码
+## 目录结构
+- `.claude/` — Claude Code 配置（agents、commands、skills）
+- `docs/specs/` — 需求、产品、技术设计文档
+- `docs/knowledges/` — 编码规范、设计模板、领域知识
+- `workspace/` — 流水线状态、session 记录
+- `backend/` — 后端代码
+- `frontend/` — 前端代码
+
+## 研发流程
+本项目由 AIFD 框架驱动，按以下阶段推进：
+1. 需求分析 → 2. 产品设计 → 3. 技术设计 → 4. 编码实现 → 5. 测试验证

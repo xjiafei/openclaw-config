@@ -1,8 +1,6 @@
 {
   "project": "",
   "created_at": "",
-  "feature_id": "",
-  "feature_specs_dir": "docs/specs/feature001-specs",
   "stages": {
     "requirements": { "status": "pending", "retry_count": 0 },
     "product": { "status": "pending", "retry_count": 0 },
