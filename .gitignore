@@ -7,9 +7,9 @@ identity/
 devices/
 
 # 会话和工作区状态
-workspace/
-workspace-*.json
-workspace-*/
+# workspace/
+# workspace-*.json
+# workspace-*/
 *.swp
 *.swo
 
