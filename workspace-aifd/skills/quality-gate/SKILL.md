@@ -1,47 +1,12 @@
 # quality-gate — 质量把关
 
-## 用途
-评估 Claude Code 产出的文档或代码的质量。
-
 ## 参数
-- `project_path`：业务项目的绝对路径
+- `project_path`：业务项目绝对路径
 
-## 评估维度
-
-**文档类产物**（requirements.md, product.md, tech.md）：
-1. 完整性：是否覆盖了所有需求点？
-2. 一致性：与上游文档是否矛盾？
-3. 可执行性：描述是否具体到可直接实现？
-4. 质量评分：1-10
-
-**后端代码类产物**（backend/）：
-1. 功能完整性：是否实现了 tech.md 中定义的所有端点？
-2. 编译检查：`cd {project_path}/backend && mvn compile`
-3. 单元测试：`cd {project_path}/backend && mvn test`
-4. 规范一致性：是否符合编码规范？
-5. 质量评分：1-10
-
-**前端代码类产物**（frontend/）：
-1. 功能完整性：是否实现了 product.md 中定义的所有页面？
-2. 构建检查：`cd {project_path}/frontend && npm run build`
-3. 测试运行：`cd {project_path}/frontend && npm test`
-4. 规范一致性：是否符合编码规范？
-5. 质量评分：1-10
-
-## 输出格式
-写入 `{project_path}/workspace/sessions/{timestamp}-review.json`：
-```json
-{
-  "stage": "当前阶段",
-  "timestamp": "ISO时间戳",
-  "verdict": "pass|fail",
-  "score": 7,
-  "must_fix": [],
-  "suggestions": [],
-  "summary": "一句话总结"
-}
-```
-
-## 判定规则
-- score >= 7 且 must_fix 为空 → pass
-- 否则 → fail
+## 规则
+1. 文档阶段：完整性/一致性/可执行性评分，>=7 通过
+2. implementation/testing 阶段：必须执行全量回归测试
+   - 后端：`cd {project_path}/backend && mvn test`
+   - 前端：`cd {project_path}/frontend && npm test`
+3. 任一全量测试失败，直接判定 `fail`
+4. 输出 review 到 `{project_path}/workspace/sessions/{timestamp}-review.json`
