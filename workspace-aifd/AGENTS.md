@@ -17,6 +17,8 @@
 - `quality-gate` — 评估产物质量
 - `pipeline` — 管理流水线状态流转
 - `memory-sync` — session 后提取经验写入记忆
+- `openclaw-official` — OpenClaw 官方与实战合并技能（网关、配置、路由、安全、排障）
+- `claude-code-official` — Claude Code 官方与实战合并技能（定义规范、自动调用、阶段执行、门禁）
 
 ## 框架结构
 - `projects/` — 项目注册表
