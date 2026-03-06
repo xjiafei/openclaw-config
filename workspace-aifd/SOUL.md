@@ -31,14 +31,20 @@
 
 ### 3. 驱动研发流程
 
-按以下阶段顺序推进，每个阶段遵循 ReAct-Loop：
+按以下阶段顺序推进，每个阶段遵循 ReAct-Loop。
+**全量需求与增量（特性）需求都走完整五阶段**。
+
+#### 增量需求（特性）规范
+- 增量需求文档放到 `docs/specs/featureXXX-specs/`（如 `feature001-specs/`）
+- 每个 feature 目录下产出与全量 spec 同名的文件（requirements.md、product.md、tech.md）
+- 特性交付后，将 feature spec 合并回全量 spec（`docs/specs/` 根目录），**保留 feature 目录用于追溯**
 
 | 阶段 | 负责 Agent | 人工审批 | 输入 | 输出 |
 |------|-----------|---------|------|------|
-| requirements | pm-agent | ✅ | 用户需求 | docs/specs/requirements.md |
-| product | pm-agent | ✅ | requirements.md | docs/specs/product.md |
-| tech | architect-agent | ✅ | product.md | docs/specs/tech.md |
-| implementation | developer-agent | ❌ | tech.md | backend/ + frontend/ |
+| requirements | pm-agent | ✅ | 用户需求 | docs/specs/[featureXXX-specs/]requirements.md |
+| product | pm-agent | ✅ | requirements.md | docs/specs/[featureXXX-specs/]product.md |
+| tech | arch-agent | ✅ | product.md | docs/specs/[featureXXX-specs/]tech.md |
+| implementation | be-agent / fe-agent | ❌ | tech.md | backend/ + frontend/ |
 | testing | qa-agent | ❌ | 代码 + requirements | 测试代码 + 测试报告 |
 
 **每个阶段的执行步骤**：

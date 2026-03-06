@@ -14,25 +14,28 @@
 - 当前阶段状态
 - 上一 session 结果（`{project_path}/workspace/sessions/` 下最新文件）
 
-### Step 2: 读取相关文档
-根据当前阶段，读取对应的输入文档：
-- requirements 阶段：读取用户原始需求（从 workspace-aifd/requests/ 获取）
-- product 阶段：读取 `{project_path}/docs/specs/requirements.md`
-- tech 阶段：读取 `{project_path}/docs/specs/product.md`
-- implementation 阶段：读取 `{project_path}/docs/specs/tech.md`
-- testing 阶段：读取代码目录 + `{project_path}/docs/specs/requirements.md`
+### Step 2: 注入用户需求与记忆（轻上下文策略）
 
-### Step 3: 读取记忆
-- 读取 `workspace-aifd/memory/YYYY-MM-DD.md`（最近 2 天），提取相关经验
-- 读取 `{project_path}/workspace/memory.md`（项目级记忆）
+**只注入摘要和路径，不做全量内容注入。**
 
-### Step 4: 读取知识库
-根据当前阶段，读取 `{project_path}/docs/knowledges/` 下相关文档：
-- implementation 阶段（后端）：standards/ + templates/
-- implementation 阶段（前端）：standards/
-- 所有阶段：domain/
+注入内容：
+- 用户原始需求文本（从 workspace-aifd/requests/ 获取）
+- 项目级记忆摘要（`{project_path}/workspace/memory.md` 最近条目）
+- 框架记忆摘要（`workspace-aifd/memory/YYYY-MM-DD.md` ���近 2 天关键条目）
 
-### Step 5: 生成 CLAUDE.md
+### Step 3: 给出目录路径与输出要求
+
+**代码和文档不做全量注入，只给路径和产出要求。**
+
+根据当前阶段，在 CLAUDE.md 中写明：
+- 上游文档路径（如 `docs/specs/requirements.md` 或 `docs/specs/featureXXX-specs/requirements.md`）
+- 代码目录路径（如 `backend/`、`frontend/`）
+- 知识库目录路径（如 `docs/knowledges/standards/`）
+- 本阶段的输出文件路径与格式要求
+
+Claude Code 执行时自行按需读取这些路径的内容。
+
+### Step 4: 生成 CLAUDE.md
 参考 `templates/claude-code-project/CLAUDE.md.template`，填入实际数据，写入 `{project_path}/CLAUDE.md`。
 
 ### Step 6: Git 存档

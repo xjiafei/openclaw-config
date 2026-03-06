@@ -1,6 +1,8 @@
 {
   "project": "",
   "created_at": "",
+  "request_id": "",
+  "feature_id": "",
   "stages": {
     "requirements": { "status": "pending", "retry_count": 0 },
     "product": { "status": "pending", "retry_count": 0 },

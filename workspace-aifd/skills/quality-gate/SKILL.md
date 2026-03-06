@@ -42,6 +42,14 @@
 }
 ```
 
+## 回归门禁（implementation / testing 阶段）
+
+在 implementation 和 testing 阶段，除常规质量评分外，还必须执行全量测试：
+- 后端：`cd {project_path}/backend && mvn test`（或对应构建工具）
+- 前端：`cd {project_path}/frontend && npm test`（或对应构建工具）
+- **全量测试必须全部通过，否则直接判定 fail**，不论评分多高
+
 ## 判定规则
-- score >= 7 且 must_fix 为空 → pass
+- implementation / testing 阶段：全量测试必须通过 **且** score >= 7 且 must_fix 为空 → pass
+- 其他阶段：score >= 7 且 must_fix 为空 → pass
 - 否则 → fail

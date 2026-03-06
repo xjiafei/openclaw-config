@@ -6,13 +6,22 @@
 {tech_stack}
 
 ## 目录结构
-- `.claude/` — Claude Code 配置（agents、commands、skills）
-- `docs/specs/` — 需求、产品、技术设计文档
+- `.claude/agents/` — Agent 定义（pm-agent, arch-agent, be-agent, fe-agent, qa-agent, devops-agent）
+- `.claude/skills/` — 扩展 Skills
+- `.claude/commands/` — 自定义命令
+- `.claude/hooks/` — 生命周期钩子
+- `docs/specs/` — 全量需求、产品、技术设计文档
+- `docs/specs/featureXXX-specs/` — 增量特性需求文档（交付后合并回全量 spec，目录保留追溯）
 - `docs/knowledges/` — 编码规范、设计模板、领域知识
 - `workspace/` — 流水线状态、session 记录
 - `backend/` — 后端代码
 - `frontend/` — 前端代码
 
 ## 研发流程
-本项目由 AIFD 框架驱动，按以下阶段推进：
+本项目由 AIFD 框架驱动，全量需求与增量需求都走完整五阶段：
 1. 需求分析 → 2. 产品设计 → 3. 技术设计 → 4. 编码实现 → 5. 测试验证
+
+### 增量需求（特性）流程
+- 特性文档放在 `docs/specs/featureXXX-specs/` 下
+- 走完整五阶段流程
+- 交付后合并回 `docs/specs/` 全量文档，保留 feature 目录用于追溯
