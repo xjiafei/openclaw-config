@@ -96,6 +96,11 @@ agent_blocks = {
         f"- 质量目标：发布与运维策略需满足{nfr}。",
         f"- 边界意识：遵循系统边界（{boundary}）与合规要求。"
     ],
+    "code-reviewer.md": [
+        f"- 业务理解：熟悉{domain}核心流程，能识别业务逻辑错误。",
+        f"- 技术审查：基于{tech}技术栈审查代码质量与安全。",
+        f"- 质量对齐：审查标准对齐{nfr}。",
+    ],
 }
 
 for name, lines in agent_blocks.items():
