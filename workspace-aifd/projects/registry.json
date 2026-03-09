@@ -17,6 +17,15 @@
       "status": "active",
       "createdAt": "2026-03-06",
       "lastActivity": "2026-03-06"
+    },
+    {
+      "id": "my-knowledge",
+      "name": "个人知识库管理系统",
+      "path": "/root/my-knowledge",
+      "techStack": "Spring Boot + Vue + MySQL",
+      "status": "active",
+      "createdAt": "2026-03-09",
+      "lastActivity": "2026-03-09"
     }
   ]
 }

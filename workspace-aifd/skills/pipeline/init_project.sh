@@ -21,6 +21,11 @@ NOW_ISO=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 mkdir -p "$PROJECT_PATH"
 cp -r "$TEMPLATE_DIR"/. "$PROJECT_PATH"/
 
+# 设置目录归属为 claw 用户（Claude Code 必须以非 root 用户运行）
+chown -R claw:claw "$PROJECT_PATH"
+# 添加 git safe.directory
+git config --global --add safe.directory "$PROJECT_PATH" 2>/dev/null || true
+
 # Fill pipeline.json (v2)
 python3 - <<PY
 import json

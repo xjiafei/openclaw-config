@@ -339,7 +339,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "ccc/claude-opus-4-6"
+        "primary": "zai/glm-5"
       },
       "models": {
         "zai/glm-5": {
@@ -409,7 +409,7 @@
         "name": "AIFD Orchestrator",
         "workspace": "/root/.openclaw/workspace-aifd",
         "agentDir": "/root/.openclaw/agents/aifd",
-        "model": "ccc/claude-opus-4-6",
+        "model": "zai/glm-5",
         "sandbox": {
           "mode": "off"
         },
