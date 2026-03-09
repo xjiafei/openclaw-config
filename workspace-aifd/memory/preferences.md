@@ -23,3 +23,9 @@
 - Claude Code CLI 无法以 root 运行，必须以普通用户执行（2026-03-09，来源：用户明确要求）
 - 业务项目初始化时需要先创建子用户 `claw`，项目目录所属为 `claw:claw`（2026-03-09，来源：用户明确要求）
 - Claude Code CLI 以 `su - claw -c "..."` 方式执行（2026-03-09，来源：用户明确要求）
+
+## 任务待办
+- [ ] 18:40 后继续 my-knowledge 项目 requirements 阶段（使用 Claude 模型）
+  - 会话 ID 待生成
+  - 项目路径：/root/my-knowledge/
+  - 当前状态：等待 API 限额重置（$35 限额，77 分钟后重置）
