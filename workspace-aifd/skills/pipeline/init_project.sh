@@ -76,6 +76,24 @@ nfr = "$NFR"
 boundary = "$BOUNDARY"
 
 agent_blocks = {
+    "go-be-agent.md": [
+        f"- 业务实现：理解{domain}核心业务规则并在后端实现。",
+        "- 技术能力：精通 Go 标准库、HTTP 框架（Gin/Echo/Fiber）与数据库交互。",
+        f"- 工程约束：遵循{tech}技术约束与{nfr}质量目标。",
+        f"- 边界意识：仅在系统边界（{boundary}）内实现需求。"
+    ],
+    "python-be-agent.md": [
+        f"- 业务实现：理解{domain}核心业务规则并在后端实现。",
+        "- 技术能力：精通 Python Web 框架（FastAPI/Django/Flask）与 ORM。",
+        f"- 工程约束：遵循{tech}技术约束与{nfr}质量目标。",
+        f"- 边界意识：仅在系统边界（{boundary}）内实现需求。"
+    ],
+    "react-fe-agent.md": [
+        f"- 业务体验：理解{domain}场景下的多角色操作路径与信息架构。",
+        "- 前端能力：具备 React/Next.js 开发经验，关注可用性与组件化。",
+        f"- 工程约束：遵循{tech}约束与{nfr}指标，保证构建稳定与可测试。",
+        f"- 边界意识：遵循系统边界（{boundary}），不扩展无关功能。"
+    ],
     "pm-agent.md": [
         f"- 业务理解：熟悉{domain}的核心流程、角色权限与数据口径。",
         "- 产品经验：具备管理系统（B端）产品设计经验，能够输出可验收的 PRD/用户故事。",

@@ -225,3 +225,29 @@ DELETE /api/v1/students/{id}     删除学生
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->
+
+## 实现验收模式（Close Loop）
+
+在自动闭环流程中被调度时，你需要切换为**实现验收模式**：对照 `docs/specs/tech.md` 验收代码实现。
+
+### 验收检查项
+1. **架构分层**：代码是否按设计的分层架构实现
+2. **数据模型**：数据库表结构是否与设计一致
+3. **API 实现**：接口是否与定义一致
+4. **安全方案**：认证/授权是否按设计实现
+5. **非功能需求**：性能相关设计是否落地
+
+### 输出要求
+输出结构化 JSON 到 `workspace/arch-acceptance.json`：
+
+```json
+{
+  "passed": false,
+  "summary": "API 实现与设计有偏差",
+  "items": [
+    { "id": "T3", "title": "接口定义一致性", "passed": false, "reason": "缺少分页参数", "file": "path/to/file" }
+  ]
+}
+```
+
+**通过条件**：所有 items `passed: true`。

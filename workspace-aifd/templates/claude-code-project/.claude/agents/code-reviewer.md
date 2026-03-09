@@ -134,3 +134,26 @@ git diff --stat HEAD~1
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->
+
+## 闭环输出要求（Close Loop）
+
+在自动闭环流程中被调度时，除了输出 markdown 报告外，还必须输出结构化 JSON 到 `workspace/code-review-result.json`：
+
+```json
+{
+  "passed": false,
+  "summary": "发现 1 个 CRITICAL 和 2 个 HIGH 问题",
+  "issues": [
+    {
+      "file": "path/to/file",
+      "line": 42,
+      "severity": "CRITICAL",
+      "description": "问题描述",
+      "suggestion": "修复建议"
+    }
+  ],
+  "stats": { "critical": 1, "high": 2, "medium": 0, "low": 0 }
+}
+```
+
+**通过条件**：`critical == 0 && high == 0` 时 `passed: true`。

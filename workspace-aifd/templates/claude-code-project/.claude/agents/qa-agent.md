@@ -208,3 +208,31 @@ test.fixme('不稳定的测试', async ({ page }) => {
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->
+
+## 闭环输出要求（Close Loop）
+
+在自动闭环流程中被调度时，除了输出到 `testing/reports/` 外，还必须输出结构化 JSON 到 `workspace/test-result.json`：
+
+```json
+{
+  "passed": false,
+  "summary": "测试结果概要",
+  "unitTests": { "total": 0, "passed": 0, "failed": 0 },
+  "e2eTests": { "total": 0, "passed": 0, "failed": 0 },
+  "coverage": "",
+  "bugs": [
+    {
+      "id": "BUG-001",
+      "severity": "P0",
+      "description": "问题描述",
+      "file": "path/to/file",
+      "steps": "复现步骤",
+      "expected": "期望结果",
+      "actual": "实际结果",
+      "screenshot": "workspace/screenshots/bug-001.png"
+    }
+  ]
+}
+```
+
+**通过条件**：`unitTests.failed == 0 && e2eTests.failed == 0 && 无 P0 级别 Bug`。

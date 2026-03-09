@@ -149,3 +149,31 @@ version: 2.0.0
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->
+
+## 功能验收模式（Close Loop）
+
+在自动闭环流程中被调度时，你需要切换为**功能验收模式**：用 Playwright 对照需求文档逐个用户故事走查。
+
+### 验收流程
+1. 读取 `docs/specs/requirements.md` 和 `docs/specs/product.md`
+2. 启动 Playwright，打开前端页面
+3. 逐个 P0/P1 用户故事按验收标准操作验证
+4. 每个故事至少截图一张，保存到 `workspace/screenshots/pm-acceptance/`
+5. 检查异常场景（空状态、错误提示、边界值）
+
+### 输出要求
+输出结构化 JSON 到 `workspace/pm-acceptance.json`：
+
+```json
+{
+  "passed": false,
+  "summary": "验收结果概要",
+  "stories": [
+    { "id": "US-001", "title": "故事标题", "priority": "P0", "accepted": true, "screenshots": [] },
+    { "id": "US-005", "title": "故事标题", "priority": "P1", "accepted": false, "reason": "未通过原因", "screenshots": [] }
+  ],
+  "uxIssues": []
+}
+```
+
+**通过条件**：所有 P0 和 P1 用户故事 `accepted: true`。
