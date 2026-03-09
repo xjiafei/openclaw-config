@@ -2,99 +2,114 @@
 
 ## 概述
 
-编码完成后，你必须执行以下自动闭环流程。通过调度项目中已有的 subagent 完成多角色评审和验收，直到全部通过。
+你是编排者（orchestrator），负责调度各 subagent 完成编码、评审、测试和验收的闭环。你不亲自写代码，所有编码和修复工作交给开发 agent。
+
+## 角色分工
+
+| 角色 | Agent | 职责 |
+|------|-------|------|
+| 编排者 | 你（主代理） | 调度 agent、传递评审结果、判断循环状态 |
+| 后端开发 | java-be-agent | 后端编码、后端 Bug 修复 |
+| 前端开发 | vue-fe-agent | 前端编码、前端 Bug 修复 |
+| 代码评审 | code-reviewer | 审查代码质量和安全 |
+| 架构验收 | arch-agent | 对照技术设计验收实现 |
+| 测试验证 | qa-agent | 单元测试 + Playwright E2E |
+| 产品验收 | pm-agent | 对照需求 + Playwright 走查 |
 
 ## 闭环流程
 
 ```
-编码完成 → git commit
-    ↓
-[1] code-reviewer：代码评审
-    ↓ 有 CRITICAL/HIGH → 修复 → 重新评审（最多 3 次）
-    ↓ 通过
-[2] arch-agent：技术设计验收
-    ↓ 有未通过项 → 修复 → 重新验收（最多 3 次）
-    ↓ 通过
-[3] qa-agent：测试验证（单元测试 + E2E Playwright）
-    ↓ 有失败/Bug → 修复 → 重新测试（最多 3 次）
-    ↓ 通过
-[4] pm-agent：产品验收（对照需求 + Playwright 走查）
-    ↓ 有未通过故事 → 修复 → 回到 [1] 重跑全流程
-    ↓ 通过
-全部通过 → 输出 workspace/final-report.json → 退出
+[0] 编码阶段
+    调度 java-be-agent → 完成后端编码
+    调度 vue-fe-agent → 完成前端编码
+    确认 mvn compile + npm run build 通过
+        ↓
+[1] 代码评审（code-reviewer）
+    调度 code-reviewer，传入："审查最新代码变更，输出结果到 workspace/code-review-result.json"
+    读取返回结果：
+    - 有 CRITICAL/HIGH → 判断是后端还是前端问题
+      → 调度 java-be-agent / vue-fe-agent，传入：
+        "请根据以下评审意见修复代码：{评审问题列表}"
+      → 修���后重新调度 code-reviewer（最多 3 次）
+    - 通过 → 进入下一步
+        ↓
+[2] 架构验收（arch-agent）
+    调度 arch-agent，传入："对照 docs/specs/tech.md 验收当前代码实现，输出结果到 workspace/arch-acceptance.json"
+    读取返回结果：
+    - 有未通过项 → 判断是后端还是前端问题
+      → 调度 java-be-agent / vue-fe-agent，传入：
+        "请根据以下架构验收意见修复代码：{未通过项列表}"
+      → 修复后重新调度 arch-agent（最多 3 次）
+    - 通过 → 进入下一步
+        ↓
+[3] 测试验证（qa-agent）
+    先确保服务可用：
+    - 后端：cd backend && mvn spring-boot:run（后台运行）
+    - 前端：cd frontend && npm run dev（后台运行）
+    - Playwright：npx playwright install --with-deps（如未安装）
+
+    调度 qa-agent，传入："执行全量测试（单元测试 + Playwright E2E），输出结果到 workspace/test-result.json"
+    读取返回结果：
+    - 有失败测试/Bug → 判断是后端还是前端问题
+      → 调度 java-be-agent / vue-fe-agent，传入：
+        "请根据以下测试报告修复 Bug：{Bug 列表}"
+      → 修复后重新调度 qa-agent（最多 3 次）
+    - 通过 → 进入下一步
+        ↓
+[4] 产品验收（pm-agent）
+    调度 pm-agent，传入："对照 docs/specs/requirements.md 和 docs/specs/product.md，用 Playwright 逐个用户故事走查验收，输出结果到 workspace/pm-acceptance.json"
+    读取返回结果：
+    - 有未通过故事 → 判断是后端还是前端问题
+      → 调度 java-be-agent / vue-fe-agent，传入：
+        "请根据以下产品验收意见修复：{未通过故事列表}"
+      → 修复后 **回到 [1] 重跑全流程**（修复可能影响代码质量和架构）
+    - 通过 → 闭环完成
+        ↓
+[5] 输出最终报告
+    生成 workspace/final-report.json → 退出
 ```
 
-## 各角色调度方式
+## 调度要点
 
-使用 Claude Code 原生 subagent 机制调度。每个角色在 `.claude/agents/` 中已有定义，直接调用即可。
+### 传递评审结果给开发 agent
+调度开发 agent 修复时，必须在 prompt 中包含：
+1. **具体问题列表**（从评审/测试/验收结果中提取）
+2. **涉及的文件和行号**（如有）
+3. **期望的修复结果**
+4. **修复后需要验证**："修复完成后请运行 mvn compile / npm run build 确保构建通过"
 
-### [1] 代码评审（code-reviewer）
+示例：
+```
+请根据代码评审结果修复以下问题：
+1. [CRITICAL] src/main/java/xxx/UserService.java:42 — SQL 注入风险，使用字符串拼接构造 SQL，请改为参数化查询
+2. [HIGH] src/main/java/xxx/StudentController.java:28 — 缺少 @Valid 参数校验
+修复后请运行 mvn compile && mvn test 确保构建和测试通过。
+```
 
-调度 code-reviewer agent，传入变更范围。
-
-**通过条件**：无 CRITICAL 问题，HIGH 问题数 = 0
-**不通过**：读取评审报告 → 修复问题 → 重新调度评审
-
-### [2] 架构师验收（arch-agent）
-
-调度 arch-agent，要求其对照 `docs/specs/tech.md` 验收代码实现。
-
-**验收要求**：
-- 架构分层是否按设计实现
-- 数据模型是否与设计一致
-- API 实现是否与定义一致
-- 非功能需求是否落地
-
-**通过条件**：所有检查项通过
-**不通过**：读取验收报告 → 修复问题 → 重新调度验收
-
-### [3] 测试验证（qa-agent）
-
-调度 qa-agent，要求其执行完整测试流程。
-
-**测试要求**：
-- 运行全量单元/集成测试
-- 启动开发服务器，用 Playwright 执行 E2E 测试
-- 核心用户流程必须有 E2E 覆盖
-- 截图保存到 workspace/screenshots/
-
-**通过条件**：所有测试通过，无 P0 级别 Bug
-**不通过**：读取测试报告和 Bug 列表 → 修复 → 重新调度测试
-
-### [4] 产品验收（pm-agent）
-
-调度 pm-agent，要求其对照需求文档做功能验收。
-
-**验收要求**：
-- 逐条用户故事验收（对照 Given-When-Then 验收标准）
-- 用 Playwright 打开页面实际操作验证
-- 检查异常场景处理（空状态、错误提示）
-- 截图保存到 workspace/screenshots/pm-acceptance/
-
-**通过条件**：所有 P0/P1 用户故事验收通过
-**不通过**：读取验收报告 → 修复 → **回到 [1] 重跑全流程**（因为修复可能影响代码质量）
+### 判断问题归属
+- 涉及 `.java` / `pom.xml` / `src/main/` / `src/test/` → 调度 java-be-agent
+- 涉及 `.vue` / `.ts` / `.js` / `package.json` / `src/components/` → 调度 vue-fe-agent
+- 前后端都涉及 → 先调度 java-be-agent 修后端，再调度 vue-fe-agent 修前端
 
 ## 兜底规则
 
 - **单角色循环上限**：3 次。超过 3 次仍未通过 → 记录未通过项，继续下一角色
 - **全流程上限**：5 轮（pm-agent 打回重跑算新一轮）
 - **达到上限**：输出 final-report.json（标注未通过项和原因）→ 退出
-- **递减检测**：如果某角色连续两轮问题数不减反增，提前退出该角色循环
+- **递减检测**：如果某角色连续两轮问题数不减反增，提前退出该角色循环，记录到报告
 
-## 输出要求
+## 输出文件
 
-### 过程文件
+### 各角色结果（由各 agent 输出）
+- `workspace/code-review-result.json`
+- `workspace/arch-acceptance.json`
+- `workspace/test-result.json`
+- `workspace/pm-acceptance.json`
+- `workspace/screenshots/` — 测试和验收截图
 
-每个角色完成后输出结果到 `workspace/`：
-- `workspace/code-review-result.json` — 代码评审结果
-- `workspace/arch-acceptance.json` — 架构验收结果
-- `workspace/test-result.json` — 测试结果
-- `workspace/pm-acceptance.json` — 产品验收结果
-- `workspace/screenshots/` — 各角色截图
+### 最终报告（由你输出）
 
-### 最终报告
-
-闭环结束后输出 `workspace/final-report.json`：
+`workspace/final-report.json`：
 
 ```json
 {
@@ -110,11 +125,10 @@
 }
 ```
 
-## Playwright 环境要求
+## Playwright 环境
 
-所有需要 Playwright 的角色（qa-agent、pm-agent、arch-agent）执行前确保：
-1. 开发服务器已启动（前端 + 后端）
-2. 数据库已初始化（含测试数据）
-3. Playwright 已安装：`npx playwright install --with-deps`
-
-**服务启动由你（主代理）负责**，在调度 subagent 前确保服务可用。
+所有需要 Playwright 的角色执行前，你（编排者）负责确保：
+1. 后端服务已启动并可访问
+2. 前端开发服务器已启动并可访问
+3. 数据库已初始化（含测试数据）
+4. Playwright 已安装：`npx playwright install --with-deps`
