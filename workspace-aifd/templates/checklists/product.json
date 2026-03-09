@@ -38,5 +38,6 @@
       "criteria": "不同角色在各页面/功能的可见性和操作权限有明确说明",
       "passes": false
     }
-  ]
+  ],
+  "minIterations": 2
 }

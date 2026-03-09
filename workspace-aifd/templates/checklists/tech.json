@@ -44,5 +44,6 @@
       "criteria": "包含部署方案、环境配置、监控策略、日志策略的基本说明",
       "passes": false
     }
-  ]
+  ],
+  "minIterations": 2
 }
