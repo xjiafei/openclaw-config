@@ -40,15 +40,29 @@
 
 ## 状态流转
 
-需要审批的阶段：
+需要审批的阶段（v2.1 含 Review Loop）：
 ```
-pending → in_progress → waiting_review → done
+pending → in_progress → self_reviewing → waiting_review → done
 ```
+
+- `self_reviewing`：Claude Code 正在执行自检循环（Review Loop）
+- `waiting_review`：自检完成，等待架构师审批
 
 不需要审批的阶段：
 ```
 pending → in_progress → done
 ```
+
+## Review Loop 集成
+
+Claude Code 退出后，OpenClaw 检查 `{project_path}/workspace/checklist.json`：
+1. 所有 `passes: true` → 状态推进到 `waiting_review`，通知用户审批
+2. 有 `passes: false` 项 → 状态仍为 `waiting_review`，但通知用户时标注未通过项
+3. `workspace/review-log.md` 作为自检过程记录，审批时可供参考
+
+审批后反馈沉淀：
+- 审批反馈写入 `{project_path}/workspace/memory.md`
+- 通用偏好写入 `workspace-aifd/memory/preferences.md`（作为未来检查清单的额外规则）
 
 ## 会话管理
 

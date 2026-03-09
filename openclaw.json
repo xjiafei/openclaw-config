@@ -409,7 +409,7 @@
         "name": "AIFD Orchestrator",
         "workspace": "/root/.openclaw/workspace-aifd",
         "agentDir": "/root/.openclaw/agents/aifd",
-        "model": "zai/glm-5",
+        "model": "ccc/claude-opus-4-6",
         "sandbox": {
           "mode": "off"
         },

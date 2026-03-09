@@ -1,0 +1,48 @@
+{
+  "stage": "requirements",
+  "maxIterations": 3,
+  "checkItems": [
+    {
+      "id": "R1",
+      "title": "背景目标清晰",
+      "criteria": "包含业务背景、要解决的核心问题、可衡量的成功指标",
+      "passes": false
+    },
+    {
+      "id": "R2",
+      "title": "用户角色完整",
+      "criteria": "列出所有用户角色，每个角色有核心诉求和使用场景描述",
+      "passes": false
+    },
+    {
+      "id": "R3",
+      "title": "用户故事含验收标准",
+      "criteria": "每个用户故事有 Given-When-Then 格式的验收标准，且标准可测试",
+      "passes": false
+    },
+    {
+      "id": "R4",
+      "title": "非功能需求明确",
+      "criteria": "性能（响应时间/并发量）、安全、可用性有具体量化指标",
+      "passes": false
+    },
+    {
+      "id": "R5",
+      "title": "边界与排除项",
+      "criteria": "明确说明本期不做什么、系统边界在哪",
+      "passes": false
+    },
+    {
+      "id": "R6",
+      "title": "术语一致性",
+      "criteria": "全文术语统一无矛盾，关键术语有定义或术语表",
+      "passes": false
+    },
+    {
+      "id": "R7",
+      "title": "优先级标注",
+      "criteria": "用户故事有优先级标注（P0/P1/P2 或 MoSCoW），核心路径可识别",
+      "passes": false
+    }
+  ]
+}

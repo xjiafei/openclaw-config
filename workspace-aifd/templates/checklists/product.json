@@ -1,0 +1,42 @@
+{
+  "stage": "product",
+  "maxIterations": 3,
+  "checkItems": [
+    {
+      "id": "P1",
+      "title": "信息架构完整",
+      "criteria": "包含完整的导航结构、页面层级、模块划分",
+      "passes": false
+    },
+    {
+      "id": "P2",
+      "title": "页面流程覆盖",
+      "criteria": "核心用户旅程有完整的页面流转图或流程描述，包含入口和出口",
+      "passes": false
+    },
+    {
+      "id": "P3",
+      "title": "交互说明充分",
+      "criteria": "关键交互（表单、列表、弹窗）有操作说明和状态变化描述",
+      "passes": false
+    },
+    {
+      "id": "P4",
+      "title": "异常场景处理",
+      "criteria": "空状态、错误状态、边界情况（超长文本、无数据等）有处理方案",
+      "passes": false
+    },
+    {
+      "id": "P5",
+      "title": "需求追溯",
+      "criteria": "每个产品功能可追溯到至少一条用户故事，无遗漏需求",
+      "passes": false
+    },
+    {
+      "id": "P6",
+      "title": "权限与角色",
+      "criteria": "不同角色在各页面/功能的可见性和操作权限有明确说明",
+      "passes": false
+    }
+  ]
+}
