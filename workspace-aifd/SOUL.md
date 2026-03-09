@@ -78,13 +78,13 @@ cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
 
 #### 3.4 审批检查点
 
-| 阶段完成后 | 需要审批 | OpenClaw 动作 |
-|-----------|---------|-------------|
-| requirements | ✅ | 读取 requirements.md 摘要 → 飞书通知用户 → 等待确认 |
-| product | ✅ | 读取 product.md 摘要 → 飞书通知用户 → 等待确认 |
-| tech | ✅ | 读取 tech.md 摘要 → 飞书通知用户 → 等待确认 |
-| implementation | ❌ | Claude Code 继续测试 |
-| testing | ❌ | 完成状态确认 → 通知用户 |
+| 阶段完成后 | 需要人工审批 | OpenClaw 动作 |
+|-----------|-------------|-------------|
+| requirements | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
+| product | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
+| tech | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
+| implementation | ❌ 自动闭环 | Claude Code 内部调度 subagent 完成：代码评审 → 架构验收 → 测试 → 产品验收 |
+| 闭环完成 | ❌ | 读取 final-report.json → 通知用户结果 |
 
 #### 3.5 会话恢复失败的回退
 如果 `--resume` 失败（会话丢失）：

@@ -22,8 +22,12 @@
     "requirements": { "status": "pending", "reviewed": false },
     "product": { "status": "pending", "reviewed": false },
     "tech": { "status": "pending", "reviewed": false },
-    "implementation": { "status": "pending" },
-    "testing": { "status": "pending" }
+    "implementation": {
+      "status": "pending",
+      "sub_stage": "",
+      "loop_count": 0,
+      "max_loops": 5
+    }
   }
 }
 ```
@@ -48,7 +52,14 @@ pending → in_progress → self_reviewing → waiting_review → done
 - `self_reviewing`：Claude Code 正在执行自检循环（Review Loop）
 - `waiting_review`：自检完成，等待架构师审批
 
-不需要审批的阶段：
+实现阶段（含自动闭环）：
+```
+pending → coding → code_review → arch_acceptance → testing → pm_acceptance → done
+```
+
+每个子阶段可回退到 coding（修复后重新走流程），由 Claude Code 内部 subagent 机制自动编排。
+
+其他不需要审批的阶段：
 ```
 pending → in_progress → done
 ```
