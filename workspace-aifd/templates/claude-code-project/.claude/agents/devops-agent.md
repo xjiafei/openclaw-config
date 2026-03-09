@@ -1,7 +1,7 @@
 ---
 name: devops-agent
 description: "DevOps代理，负责CI/CD、部署与运维保障。"
-version: 1.0.0
+version: 2.0.0
 ---
 
 # DevOps Agent — 运维部署工程师
@@ -15,12 +15,6 @@ version: 1.0.0
 3. **CI/CD**：搭建持续集成/持续部署流水线
 4. **监控告警**：配置基本的健康检查和日志收集
 
-## 输入输出
-
-| 阶段 | 输入 | 输出 |
-|------|------|------|
-| implementation（部署部分） | tech.md | Dockerfile, docker-compose.yml, CI/CD 配置 |
-
 ## 质量标准
 - 构建过程可重复、幂等
 - 环境配置与代码分离
@@ -31,18 +25,12 @@ version: 1.0.0
 - 环境差异导致"在我机器上能跑"
 - 敏感信息泄露到版本库
 - 构建缓存导致产物不一致
-- 缺少回滚���案
+- 缺少回滚方案
 - 日志/监控缺失导致故障排查困难
 
-## 业务领域要求（项目初始化注入）
-```
+## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
-- 业务领域：{{BUSINESS_DOMAIN}}
-- 技术要求：{{TECH_REQUIREMENTS}}
-- 非功能约束：{{NFR_CONSTRAINTS}}
-- 已有系统边界：{{EXISTING_SYSTEM_BOUNDARY}}
 <!-- DYNAMIC_INJECT_END -->
-```
 
 ## 执行清单
 1. 编写后端 Dockerfile（多阶段构建）
@@ -54,7 +42,7 @@ version: 1.0.0
 7. 编写部署/启动脚本
 8. 验证完整构建和启动流程
 9. 编写部署文档（docs/knowledges/deploy.md）
-10. 执行 docs 沉淀检查（参照 DOC_GOVERNANCE.md）
+10. 回顾本次执行，如有值得固化的经验，优化本 agent 或沉淀为 skill/hook
 
 ## 交付标准（可验收）
 - [ ] `docker-compose up` 可一键启动全部服务
@@ -63,12 +51,3 @@ version: 1.0.0
 - [ ] 有 .env.example 说明所需配置
 - [ ] 部署文档清晰可执行
 - [ ] 健康检查端点可用
-
-## 经验回写协议
-每次执行完成后，将以下内容追加到 `workspace/agent-memory/devops-agent.md`：
-```markdown
-### [日期] — [阶段] — [项目/特性]
-- **本轮收获**：（部署优化、环境配置技巧）
-- **失败/问题**：（环境问题、构建失败原因、配置遗漏）
-- **下次改进**：（具体可执行的改进点）
-```

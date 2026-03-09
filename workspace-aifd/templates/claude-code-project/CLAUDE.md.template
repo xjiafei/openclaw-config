@@ -24,5 +24,14 @@
 分别输出文档摘要并停止，等待架构师审批。审批通过后会通过 --resume 继续会话。
 技术设计审批通过后，请一路完成实现和测试。
 
+## 自我进化
+你有权在执行过程中优化项目配置：
+- 发现执行清单遗漏 → 更新 .claude/agents/ 对应 agent
+- 发现可复用模式 → 沉淀为 .claude/skills/
+- 发现需要自动检查 → 创建 .claude/hooks/
+- 发现通用知识 → 写入 docs/knowledges/
+- 发现文档需补充 → 更新 docs/specs/
+详见 .claude/agents/agent-evolution-policy.md
+
 ## 项目记忆
 {{MEMORY_SUMMARY}}

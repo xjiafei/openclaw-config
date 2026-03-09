@@ -50,6 +50,7 @@ cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
 首次 prompt 必须包含：
 - 用户的原始需求
 - 项目记忆摘要（从 `workspace-aifd/memory/` 和 `{project}/workspace/memory.md` 提取）
+- 用户偏好（从 `memory/preferences.md` 提取相关偏好）
 - 审批检查点说明："完成需求分析后产出 requirements.md 并停止，等待架构师审批；审批通过后会通过 --resume 继续。产品设计和技术设计同理。技术设计审批通过后，请一路完成实现和测试。"
 
 #### 3.3 审批暂停与恢复
@@ -57,13 +58,22 @@ Claude Code 完成一个审批阶段后自然退出。OpenClaw 执行：
 1. 检查产出文件是否存在
 2. 读取产出文件摘要
 3. 通过飞书通知用户，请求审批
-4. 用户审批通过后，恢复会话：
+4. 用户审批通过后，**沉淀审批反馈**：
+   - 将审批反馈写入 `{project}/workspace/memory.md` 的"审批决策"段：
+     ```
+     ### [日期] 审批反馈 — [阶段名]
+     - 结论：通过/需修改
+     - 反馈内容：xxx
+     - 影响：xxx
+     ```
+   - 检查反馈中是否有用户个性化偏好 → 写入 `memory/preferences.md`
+5. 恢复会话，在 prompt 中明确告知 Claude Code 将审批反馈同步到 docs/specs/：
 
 ```bash
 cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
   claude --print --dangerously-skip-permissions \
   --resume {SESSION_ID} \
-  -p '架构师审批反馈 + 继续下一阶段指令'"
+  -p '架构师审批反馈 + 请将反馈涉及的变更同步到 docs/specs/ + 继续下一阶段'"
 ```
 
 #### 3.4 审批检查点
