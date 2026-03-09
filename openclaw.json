@@ -186,7 +186,7 @@
       },
       "ccc-openai": {
         "baseUrl": "https://claude-code.club/openai",
-        "api": "openai-completions",
+        "api": "openai-responses",
         "models": [
           {
             "id": "gpt-5.3-codex",
@@ -339,7 +339,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "ccc-openai/gpt-5.3-codex"
+        "primary": "ccc/claude-opus-4-6"
       },
       "models": {
         "zai/glm-5": {
@@ -354,6 +354,10 @@
         "ccc-openai/gpt-5.2-2025-12-11": {
           "alias": "GPT-5.2"
         },
+	"ccc-openai/gpt-5.3-codex": {
+		          "alias": "GPT-5.3-codex"
+			          },
+
         "ccc-openai/o3": {
           "alias": "O3"
         }
@@ -370,7 +374,7 @@
     "list": [
       {
         "id": "main",
-        "model": "zai/glm-5"
+        "model": "zai/glm-4.7"
       },
       {
         "id": "ceo",
@@ -405,7 +409,7 @@
         "name": "AIFD Orchestrator",
         "workspace": "/root/.openclaw/workspace-aifd",
         "agentDir": "/root/.openclaw/agents/aifd",
-        "model": "zai/glm-5",
+        "model": "ccc/claude-opus-4-6",
         "sandbox": {
           "mode": "off"
         },
@@ -424,7 +428,17 @@
         "channel": "feishu",
         "accountId": "aifd2"
       }
-    }
+
+    },
+    {
+	          "agentId": "main",
+		        "match": {
+				        "channel": "feishu",
+					        "accountId": "default"
+						      }
+
+						          }
+
   ],
   "messages": {
     "ackReactionScope": "group-mentions"
@@ -442,7 +456,7 @@
     "feishu": {
       "enabled": true,
       "appId": "cli_a92d7a512d795bc9",
-      "appSecret": "bmvABV3kSjYfKjGv7MjGfhUMsZlNWcAm",
+      "appSecret": "${FEISHU_DEFAULT_APP_SECRET}",
       "domain": "feishu",
       "accounts": {
         "aifd2": {

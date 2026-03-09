@@ -1,47 +1,28 @@
-# CLAUDE.md — AIFD 任务指令
-
-> 此文件由 AIFD 框架动态生成，请勿手动编辑。
+# CLAUDE.md
 
 ## 项目概述
-- 项目：{project_name}
-- 类型：{project_type}
-- 技术栈：{tech_stack}
+- 项目：{{PROJECT_NAME}}
+- 技术栈：{{TECH_STACK}}
+- 业务域：{{DOMAIN}}
 
-## 当前阶段：{current_stage}
+## 当前任务
+{{TASK_DESCRIPTION}}
 
-### 任务目标
-{task_description}
+## 文件路径指引
+- 需求/设计文档：docs/specs/
+- 编码规范：docs/knowledges/standards/
+- Agent 定义：.claude/agents/
+- 项目记忆：workspace/memory.md
 
-### 输入文档
-请阅读以下文件了解上下文：
-{input_files_list}
+## 约束
+- 完成后自行运行构建和测试验证
+- 遵循 docs/knowledges/standards/ 下的编码规范
+- 严格按已审批的文档实现，有疑问在产出中标注
 
-### 输出要求
-请产出以下文件：
-{output_files_list}
+## 审批检查点
+完成需求分析（requirements.md）、产品设计（product.md）、技术设计（tech.md）后，
+分别输出文档摘要并停止，等待架构师审批。审批通过后会通过 --resume 继续会话。
+技术设计审批通过后，请一路完成实现和测试。
 
-### 质量标准
-{quality_criteria}
-
-### 约束
-{constraints}
-
-## Session 连续性
-
-### 上次 Session 状态
-- 状态：{last_session_status}
-- 已完成：{completed_artifacts}
-- 未完成：{pending_work}
-
-### 修正指令
-{must_fix_list}
-
-## 相关经验
-{relevant_experience}
-
-## 编码规范
-请参考 docs/knowledges/standards/ 下的编码规范文档。
-
-## Agent 角色说明
-你是 {agent_role}，负责 {role_responsibility}。
-请在 .claude/agents/{agent_id}.md 中查看详细角色定义。
+## 项目记忆
+{{MEMORY_SUMMARY}}

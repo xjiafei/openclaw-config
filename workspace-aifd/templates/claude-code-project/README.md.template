@@ -25,3 +25,8 @@
 - 特性文档放在 `docs/specs/featureXXX-specs/` 下
 - 走完整五阶段流程
 - 交付后合并回 `docs/specs/` 全量文档，保留 feature 目录用于追溯
+
+
+## Claude Code 协作说明
+Claude Code 会根据任务目标自动识别并调用 `.claude/agents`、`.claude/skills`、`.claude/hooks`、`.claude/commands`。
+AIFD 负责阶段编排与质量门禁，不硬编码子能力调用顺序。

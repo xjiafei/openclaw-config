@@ -3,13 +3,13 @@
   "created_at": "",
   "request_id": "",
   "feature_id": "",
-  "stages": {
-    "requirements": { "status": "pending", "retry_count": 0 },
-    "product": { "status": "pending", "retry_count": 0 },
-    "tech": { "status": "pending", "retry_count": 0 },
-    "implementation": { "status": "pending", "retry_count": 0 },
-    "testing": { "status": "pending", "retry_count": 0 }
-  },
+  "session_id": "",
   "current_stage": "requirements",
-  "sessions": []
+  "stages": {
+    "requirements": { "status": "pending", "reviewed": false },
+    "product": { "status": "pending", "reviewed": false },
+    "tech": { "status": "pending", "reviewed": false },
+    "implementation": { "status": "pending" },
+    "testing": { "status": "pending" }
+  }
 }

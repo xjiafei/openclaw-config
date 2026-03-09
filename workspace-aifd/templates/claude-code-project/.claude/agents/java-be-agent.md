@@ -1,3 +1,9 @@
+---
+name: java-be-agent
+description: "Java后端开发代理，负责后端实现、测试与缺陷修复。"
+version: 1.0.0
+---
+
 # Java BE Agent — Java 后端开发工程师
 
 ## 角色定位
@@ -31,7 +37,7 @@
 - SQL 注入/XSS 等安全漏洞
 - 事务管理遗漏
 
-## 动态注入区（项目初始化时填充）
+## 业务领域要求（项目初始化注入）
 ```
 <!-- DYNAMIC_INJECT_START -->
 - 业务领域：{{BUSINESS_DOMAIN}}

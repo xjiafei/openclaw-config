@@ -1,3 +1,9 @@
+---
+name: vue-fe-agent
+description: "Vue前端开发代理，负责前端实现、测试与缺陷修复。"
+version: 1.0.0
+---
+
 # Vue FE Agent — Vue 前端开发工程师
 
 ## 角色定位
@@ -30,7 +36,7 @@
 - 未处理历史 UI bug 导致回归
 - 无障碍与响应式适配缺失
 
-## 动态注入区（项目初始化时填充）
+## 业务领域要求（项目初始化注入）
 ```
 <!-- DYNAMIC_INJECT_START -->
 - 业务领域：{{BUSINESS_DOMAIN}}

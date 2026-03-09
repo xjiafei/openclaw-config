@@ -8,6 +8,15 @@
       "status": "active",
       "createdAt": "2026-03-05",
       "lastActivity": "2026-03-06"
+    },
+    {
+      "id": "student-management-system",
+      "name": "学生管理系统",
+      "path": "/root/student-management-system",
+      "techStack": "Spring Boot + Vue + MySQL",
+      "status": "active",
+      "createdAt": "2026-03-06",
+      "lastActivity": "2026-03-06"
     }
   ]
 }

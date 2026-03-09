@@ -1,56 +1,66 @@
-# context-builder — 上下文构建
+# context-builder — 精简上下文构建（v2）
 
 ## 用途
-为 Claude Code 生成 CLAUDE.md 文件。在每次调用 Claude Code 前使用。
+为 Claude Code 生成精简版 CLAUDE.md。只提供目标、约束和记忆，不做技术指导。
 
 ## 参数
-- `project_path`：业务项目的绝对路径（从 projects/registry.json 获取）
+- `project_path`：业务项目的绝对路径
 
 ## 使用方式
 
 ### Step 1: 读取当前状态
 读取 `{project_path}/workspace/pipeline.json`，确定：
 - 当前阶段（current_stage）
-- 当前阶段状态
-- 上一 session 结果（`{project_path}/workspace/sessions/` 下最新文件）
+- 会话 ID（session_id）
 
-### Step 2: 注入用户需求、记忆与 Agent 经验（轻上下文策略）
+### Step 2: 收集记忆摘要
+从以下来源提取**简短摘要**（每项不超过 3 条）：
+- `{project_path}/workspace/memory.md`（项目级记忆）
+- `workspace-aifd/memory/` 最近 2 天的日志
 
-**只注入摘要和路径，不做全量内容注入。**
+记忆只提取"做法"和"避坑"类信息，不注入详细内容。
 
-注入内容：
-- 用户原始需求文本（从 workspace-aifd/requests/ 获取）
-- 项目级记忆摘要（`{project_path}/workspace/memory.md` 最近条目）
-- 框架记忆摘要（`workspace-aifd/memory/YYYY-MM-DD.md` 最近 2 天关键条目）
-- 当前执行 Agent 的经验摘要（`{project_path}/workspace/agent-memory/{agent-id}.md` 最近 3 条）
+### Step 3: 生成 CLAUDE.md
 
-> 当前阶段与 agent 映射建议：
-> - requirements/product -> `pm-agent`
-> - tech -> `arch-agent`
-> - implementation -> `java-be-agent` / `vue-fe-agent`
-> - testing -> `qa-agent`
+写入 `{project_path}/CLAUDE.md`，内容：
 
-注入到 CLAUDE.md 的“历史经验”段，格式建议：
-- 做法：...
-- 避坑：...
-- 本轮优先检查：...
+```markdown
+# CLAUDE.md
 
-### Step 3: 给出目录路径与输出要求
+## 项目概述
+- 项目：{project_name}
+- 技术栈：{tech_stack}
+- 业务域：{domain}
 
-**代码和文档不做全量注入，只给路径和产出要求。**
+## 当前任务
+{用户原始需求描述}
 
-根据当前阶段，在 CLAUDE.md 中写明：
-- 上游文档路径（如 `docs/specs/requirements.md` 或 `docs/specs/featureXXX-specs/requirements.md`）
-- 代码目录路径（如 `backend/`、`frontend/`）
-- 知识库目录路径（如 `docs/knowledges/standards/`）
-- 本阶段的输出文件路径与格式要求
+## 文件路径指引
+- 需求/设计文档：docs/specs/
+- 编码规范：docs/knowledges/standards/
+- Agent 定义：.claude/agents/
+- 项目记忆：workspace/memory.md
 
-Claude Code 执行时自行按需读取这些路径的内容。
+## 约束
+- 完成后自行运行构建和测试验证
+- 遵循 docs/knowledges/standards/ 下的编码规范
 
-### Step 4: 生成 CLAUDE.md
-参考 `templates/claude-code-project/CLAUDE.md.template`，填入实际数据，写入 `{project_path}/CLAUDE.md`。
+## 审批检查点
+完成需求分析（requirements.md）、产品设计（product.md）、技术设计（tech.md）后，
+分别输出文档摘要并停止，等待架构师审批。审批通过后会通过 --resume 继续会话。
+技术设计审批通过后，请一路完成实现和测试。
 
-### Step 5: Git 存档
+## 项目记忆
+{memory_summary}
+```
+
+**不包含的内容**：
+- 不指定用哪个 agent
+- 不写详细的输出格式要求
+- 不做代码级规划
+- 不注入 agent-memory
+
+### Step 4: Git 存档
 ```bash
-cd {project_path} && git add -A && git commit -m "pre-session: {stage}-{timestamp}" --allow-empty
+cd {project_path} && git add -A && git commit -m "pre-session: update CLAUDE.md" --allow-empty
 ```

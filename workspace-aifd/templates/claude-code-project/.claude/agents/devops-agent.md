@@ -1,3 +1,9 @@
+---
+name: devops-agent
+description: "DevOps代理，负责CI/CD、部署与运维保障。"
+version: 1.0.0
+---
+
 # DevOps Agent — 运维部署工程师
 
 ## 角色定位
@@ -28,7 +34,7 @@
 - 缺少回滚���案
 - 日志/监控缺失导致故障排查困难
 
-## 动态注入区（项目初始化时填充）
+## 业务领域要求（项目初始化注入）
 ```
 <!-- DYNAMIC_INJECT_START -->
 - 业务领域：{{BUSINESS_DOMAIN}}

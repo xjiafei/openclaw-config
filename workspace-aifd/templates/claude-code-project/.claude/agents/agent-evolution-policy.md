@@ -1,3 +1,9 @@
+---
+name: agent-evolution-policy
+description: "Agent自我进化与经验回写规范。"
+version: 1.0.0
+---
+
 # Agent 自我进化策略
 
 ## 目的

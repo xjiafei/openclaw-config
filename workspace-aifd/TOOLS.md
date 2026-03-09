@@ -1,18 +1,34 @@
-# TOOLS.md — AIFD 工具配置
+# TOOLS.md — AIFD v2 工具配置
 
-## Claude Code CLI
-- 调用方式：`cd {project_path} && claude --print --dangerously-skip-permissions -p "..."`
-- 工作目录：必须是业务项目根目录
+## Claude Code CLI（v2 持久会话模式）
+
+### 首次启动
+```bash
+SESSION_ID=$(uuidgen)
+cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
+  claude --print --dangerously-skip-permissions \
+  --session-id $SESSION_ID \
+  -p '任务目标 + 用户需求 + 项目记忆 + 审批检查点说明'"
+```
+
+### 审批后恢复
+```bash
+cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
+  claude --print --dangerously-skip-permissions \
+  --resume $SESSION_ID \
+  -p '审批反馈 + 继续下一阶段'"
+```
+
+### 回退方案
+如果 `--resume` 失败：
+1. 尝试 `--continue`（恢复最近会话）
+2. 启动新会话，注入已完成文档路径
 
 ## 项目初始化
-- 模板目录：`templates/claude-code-project/`
-- 初始化：`cp -r templates/claude-code-project/* {project_path}/`
+- 统一初始化脚本：`skills/pipeline/init_project.sh`
+- 调用示例：
+  `skills/pipeline/init_project.sh <project_id> <project_name> <project_path> <tech_stack> [domain] [nfr] [boundary]`
 
 ## Git
 - 每次 Claude Code 调用前：`cd {project_path} && git add -A && git commit -m "..." --allow-empty`
 - 失败时可 `git reset --hard` 回退
-
-## 常用构建命令（按项目技术栈调整）
-- Java：`mvn compile` / `mvn test`
-- React：`npm run build` / `npm test`
-- Python：`pip install -r requirements.txt` / `pytest`
