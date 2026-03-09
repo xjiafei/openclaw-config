@@ -3,13 +3,21 @@
   "created_at": "",
   "request_id": "",
   "feature_id": "",
+  "feature_name": "",
+  "feature_branch": "",
   "session_id": "",
   "current_stage": "requirements",
+  "is_incremental": false,
+  "base_branch": "main",
   "stages": {
     "requirements": { "status": "pending", "reviewed": false },
     "product": { "status": "pending", "reviewed": false },
     "tech": { "status": "pending", "reviewed": false },
-    "implementation": { "status": "pending" },
-    "testing": { "status": "pending" }
+    "implementation": {
+      "status": "pending",
+      "sub_stage": "",
+      "loop_count": 0,
+      "max_loops": 5
+    }
   }
 }

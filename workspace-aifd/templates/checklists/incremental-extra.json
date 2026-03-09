@@ -1,0 +1,45 @@
+{
+  "description": "增量特性额外检查项，追加到对应阶段的 checklist 末尾",
+  "requirements": [
+    {
+      "id": "IR1",
+      "title": "与全量需求一致性",
+      "criteria": "增量需求不与全量 requirements.md 矛盾，术语、角色定义一致",
+      "passes": false
+    },
+    {
+      "id": "IR2",
+      "title": "增量边界清晰",
+      "criteria": "明确说明本特性新增了什么、修改了什么、不涉及什么",
+      "passes": false
+    }
+  ],
+  "product": [
+    {
+      "id": "IP1",
+      "title": "与全量产品设计兼容",
+      "criteria": "增量页面/交互与现有产品设计的导航结构、交互风格一致，不破坏现有用户流程",
+      "passes": false
+    },
+    {
+      "id": "IP2",
+      "title": "增量影响范围明确",
+      "criteria": "说明本特性涉及哪些现有页面的改动，以及改动方式",
+      "passes": false
+    }
+  ],
+  "tech": [
+    {
+      "id": "IT1",
+      "title": "与全量技术设计兼容",
+      "criteria": "增量设计与现有架构分层、数据模型、API 风格一致，不引入架构矛盾",
+      "passes": false
+    },
+    {
+      "id": "IT2",
+      "title": "数据迁移方案",
+      "criteria": "如涉及数据库 Schema 变更，有向前兼容的迁移方案，不破坏现有数据",
+      "passes": false
+    }
+  ]
+}

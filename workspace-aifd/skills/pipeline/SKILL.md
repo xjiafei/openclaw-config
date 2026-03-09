@@ -75,6 +75,28 @@ Claude Code 退出后，OpenClaw 检查 `{project_path}/workspace/checklist.json
 - 审批反馈写入 `{project_path}/workspace/memory.md`
 - 通用偏好写入 `workspace-aifd/memory/preferences.md`（作为未来检查清单的额外规则）
 
+## 增量特性管理
+
+当收到增量需求时，OpenClaw 执行：
+
+### 初始化
+1. 生成 feature_id（格式：F001、F002...递增）
+2. 创建 feature branch：`git checkout -b feature/{feature_id}-{name} main`
+3. 创建增量文档目录：`mkdir -p docs/specs/features/{feature_id}/`
+4. 设置 pipeline.json：
+   - `is_incremental: true`
+   - `feature_id`、`feature_name`、`feature_branch`
+   - `base_branch: "main"`
+5. Git commit + 启动 Claude Code
+
+### 合并
+Close Loop 全部通过后：
+1. 增量文档追加到全量 specs（标注 feature_id）
+2. 合并记录写入 `docs/specs/features/{feature_id}/merged.md`
+3. `git checkout main && git merge {feature_branch}`
+4. `git branch -d {feature_branch}`
+5. 通知用户完成
+
 ## 会话管理
 
 - 每个需求对应一个 `session_id`（UUID）

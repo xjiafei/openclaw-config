@@ -21,6 +21,9 @@ NOW_ISO=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 mkdir -p "$PROJECT_PATH"
 cp -r "$TEMPLATE_DIR"/. "$PROJECT_PATH"/
 
+# Ensure features directory exists
+mkdir -p "$PROJECT_PATH/docs/specs/features"
+
 # 设置目录归属为 claw 用户（Claude Code 必须以非 root 用户运行）
 chown -R claw:claw "$PROJECT_PATH"
 # 添加 git safe.directory

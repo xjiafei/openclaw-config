@@ -123,9 +123,43 @@ OpenClaw **不做 LLM 打分评估**，只做客观状态确认：
 
 ## 增量需求（特性）
 
-增量需求和全量需求流程一致：启动持久会话 → 审批检查点 → 完成。
-- 增量文档放 `docs/specs/featureXXX-specs/`
-- 特性通过测试后合并回全量 specs
+增量特性和全量需求走**同一套流程**（Review Loop + Close Loop），但在以下维度做差异化。
+
+### Git 分支策略
+- 收到增量需求时，从 main 创建 `feature/{feature-id}-{name}` 分支
+- Claude Code 在 feature branch 上工作
+- Close Loop 全部通过后，合并回 main 并删除 feature branch
+
+### 文档隔离
+- 增量文档放 `docs/specs/features/{feature-id}/`（requirements.md、product.md、tech.md）
+- 验收通过后，增量文档内容追加到全量 specs（标注特性 ID）
+- 合并记录写入 `docs/specs/features/{feature-id}/merged.md`
+
+### pipeline.json 差异
+增量需求时设置：
+- `is_incremental: true`
+- `feature_id`、`feature_name`、`feature_branch`
+- `base_branch: "main"`
+
+### Review Loop 差异
+- 在全量检查项基础上，追加增量专属检查项（与全量一致性、增量边界清晰、数据迁移方案等）
+- 检查项来源：`templates/checklists/incremental-extra.json`
+
+### Close Loop 差异
+- **评审范围缩小**：code-reviewer 只审查 feature branch 的 diff；arch-agent 对照增量 tech.md
+- **测试范围全量**：qa-agent 全量回归 + 新特性测试；pm-agent 回归走查核心流程 + 验收增量故事
+- **合并阶段**：闭环通过后合并文档到全量 specs + 合并代码到 main
+
+### 流程时序
+```
+用户提增量需求
+  → OpenClaw: 生成 REQ-xxx-FNNN + 创建 feature branch + 设置 pipeline
+  → Claude Code: 增量需求分析 → Review Loop（含一致性检查）→ 审批
+  → Claude Code: 增量产品设计 → Review Loop → 审批
+  → Claude Code: 增量技术设计 → Review Loop → 审批
+  → Claude Code: 编码（feature branch）→ Close Loop（评审增量 + 测试全量回归）
+  → Close Loop 通过 → 合并文档 + 合并代码 → 通知用户完成
+```
 
 ## 项目管理
 

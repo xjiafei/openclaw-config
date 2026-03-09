@@ -125,6 +125,24 @@
 }
 ```
 
+## 增量特性模式
+
+当 `workspace/pipeline.json` 中 `is_incremental: true` 时，闭环进入增量模式：
+
+### 评审范围缩小
+- **code-reviewer**：只审查 feature branch 的变更（`git diff {base_branch}...HEAD`），传入调度时说明："只审查本特性分支相对于 {base_branch} 的变更代码"
+- **arch-agent**：对照增量 tech.md（`docs/specs/features/{feature_id}/tech.md`）验收，同时检查与全量架构的兼容性
+
+### 测试范围全量
+- **qa-agent**：新增特性的测试 + **全量回归测试**，传入调度时说明："除了验证新特性，还需要运行全量测试确保没有回归"
+- **pm-agent**：验收增量用户故事 + **回归走查核心流程**，传入调度时说明："除了验收新特性的用户故事，还需要回归走查现有核心流程确保没有破坏"
+
+### 合并阶段
+闭环全部通过后，你需要额外完成：
+1. 将增量文档合并信息记录到 `docs/specs/features/{feature_id}/merged.md`
+2. 将增量需求/产品/技术内容追加到全量 specs 对应文档的末尾（标注特性 ID）
+3. 执行 `git add -A && git commit -m "feat({feature_id}): merge feature docs to specs"`
+
 ## Playwright 环境
 
 所有需要 Playwright 的角色执行前，你（编排者）负责确保：
