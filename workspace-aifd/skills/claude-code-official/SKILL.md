@@ -1,38 +1,57 @@
 ---
 name: claude-code-official
-description: Claude Code 官方与实战合并技能。用于 Claude Code 的规范化使用：CLI 异步执行（claw 账号）、CLAUDE.md 指令设计、agents/skills/hooks/commands 定义规范、阶段化交付、质量门禁、缺陷闭环与进度汇报。
+description: Claude Code 使用规范（v2）。持久会话模式、agent 定义规范、自我进化策略。
 version: 2.0.0
 ---
 
-# Claude Code Official (Merged)
+# Claude Code Official (v2)
 
 ## 适用场景
 - 设计或优化 Claude Code 执行流程
-- 定义/审计 `.claude/agents` 与 `skills/*/SKILL.md`
-- 用 Claude Code 执行阶段任务（requirements/product/tech/implementation/testing）
+- 定义/审计 `.claude/agents` 与 `.claude/skills`
+- 用 Claude Code 执行研发任务
 
-## 统一原则
-1. AIFD 负责编排与门禁；Claude Code 负责按需自动调用 `.claude/*` 能力。
-2. 定义类文件遵循：**YAML 前置 + 说明正文**。
-3. 全量与增量需求统一走 5 阶段；增量使用 `docs/specs/featureXXX-specs/`。
-4. 任务执行使用 `claw` 账号、异步运行，并进行周期进度汇报。
+## v2 核心变化
+- 使用 `--session-id` + `--resume` 持久会话模式（非一次性 `--print`）
+- OpenClaw 不做 LLM 质量打分，只做完成状态确认
+- Claude Code 自主完成全流程（需求分析 → 设计 → 实现 → 测试）
+- 审批检查点：requirements / product / tech 完成后暂停等待架构师审批
 
-## 标准执行命令
+## 执行命令
+
+### 首次启动
 ```bash
-su - claw -c 'source ~/.bashrc && cd {project_path} && claude --print --dangerously-skip-permissions -p "{prompt}"'
+SESSION_ID=$(uuidgen)
+su - claw -c "source ~/.bashrc && cd {project_path} && \
+  claude --print --dangerously-skip-permissions \
+  --session-id $SESSION_ID \
+  -p '任务目标 + 用户需求 + 项目记忆 + 审批检查点说明'"
 ```
 
-## 质量门禁
-- 文档阶段：完整性/一致性/可执行性 >= 7
-- implementation/testing：必须跑全量测试
-  - 后端：`mvn test`
-  - 前端：`npm test`
-- 开发与测试闭环：读取 `testing/reports/bugs/` -> 修复 -> 回写状态
+### 审批后恢复
+```bash
+su - claw -c "source ~/.bashrc && cd {project_path} && \
+  claude --print --dangerously-skip-permissions \
+  --resume $SESSION_ID \
+  -p '审批反馈 + 继续下一阶段'"
+```
 
-## 定义规范边界
-- 强制：`.claude/agents/*.md`、`skills/*/SKILL.md`
-- 非强制：普通文档（README/SOUL/MEMORY/requests 等）
+### 回退方案
+1. `--resume` 失败 → 尝试 `--continue`
+2. 仍失败 → 新会话，注入已完成文档路径
+
+## Agent 定义规范
+- YAML frontmatter：name、description、tools、model、version
+- 正文结构：角色定位 → 调用边界 → 诊断命令 → 质量检查清单（CRITICAL/HIGH/MEDIUM）→ 代码示例 → 执行清单 → 交付标准
+- 动态注入：`<!-- DYNAMIC_INJECT_START/END -->`
+
+## 自我进化
+Claude Code 有权在执行中优化：
+- `.claude/agents/*.md`：增加执行清单项、补充风险、细化标准
+- `.claude/skills/`：沉淀可复用能力
+- `.claude/hooks/`：增加自动检查
+- `docs/knowledges/`：沉淀通用知识
+详见 `agent-evolution-policy.md`
 
 ## 参考
 - `references/official-overview-notes.md`
-- 官方文档索引：`https://code.claude.com/docs/llms.txt`

@@ -48,6 +48,14 @@ if [ -f "$PROJECT_PATH/CLAUDE.md.template" ]; then
     "$PROJECT_PATH/CLAUDE.md.template" > "$PROJECT_PATH/CLAUDE.md"
 fi
 
+# Generate README.md from template
+if [ -f "$PROJECT_PATH/README.md.template" ]; then
+  sed \
+    -e "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" \
+    -e "s/{{TECH_STACK}}/$TECH_STACK/g" \
+    "$PROJECT_PATH/README.md.template" > "$PROJECT_PATH/README.md"
+fi
+
 # Role-based dynamic block injection for agent files
 python3 - <<PY
 from pathlib import Path
