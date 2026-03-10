@@ -22,3 +22,9 @@
 - 根因：增量特性初始化时 OpenClaw 用 Python/mkdir 直接创建 docs/specs/features/ 子目录，未 chown 给 claw
 - 修复：新增 skills/pipeline/project_write.sh 作为统一入口，所有操作后自动 chown；SOUL.md 约束中新增"权限一致性"条款
 - 教训：凡是 OpenClaw 和 Claude Code 共享操作的目录，必须确保权限一致
+
+## 长任务执行教训
+- exec 的 timeout 参数到期后 OpenClaw 会 SIGTERM 杀进程，Close Loop 等长任务（20-60分钟）必然被中断（2026-03-10）
+- 解决方案：用 tmux 托管 Claude Code 进程，生命周期独立于 exec timeout。新增 skills/pipeline/run_claude.sh 脚本
+- 规则：预计超过 10 分钟的任务必须用 run_claude.sh，通过轮询 status/log 监控进度
+- 监控方式：检查 /tmp/claude-run-*.done 文件是否存在 + 轮询项目目录中的产出文件

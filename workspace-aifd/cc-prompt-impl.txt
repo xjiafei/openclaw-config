@@ -1,0 +1,22 @@
+架构师已审批通过技术设计（含测试方案和测试用例集），无修改意见。
+
+请进入实现阶段，按 Close Loop 流程完成：
+
+1. 编码实现（后端 + 前端），严格按 tech.md 设计
+2. 代码评审（调度 code-reviewer）
+3. 架构验收（调度 arch-agent）
+4. 测试验证（调度 qa-agent）：
+   - 按 test-cases.md 的 54 条用例执行
+   - 后端单元测试放 knowledge-backend/src/test/
+   - E2E 脚本放 testing/e2e/
+   - 集成测试放 testing/integration/
+   - 测试报告和执行明细放 testing/reports/
+5. 产品验收（调度 pm-agent）
+
+注意事项：
+- 这是增量特性，在 feature/file-knowledge-upload 分支
+- 后端代码在 knowledge-backend/，前端在 knowledge-frontend/
+- 文件存储目录用 uploads/（在 knowledge-backend/ 下或项目根目录，按 tech.md 设计）
+- E2E 测试需要启动前后端服务，后端用 H2 profile
+
+完成后输出 workspace/final-report.json 和测试结果摘要。

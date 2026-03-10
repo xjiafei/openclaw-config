@@ -1,0 +1,18 @@
+架构师已审批通过产品设计，无修改意见。请继续技术设计阶段。
+
+本阶段需要产出三份文档：
+
+1. docs/specs/features/file-knowledge/tech.md — 技术设计文档
+   包含：数据库表设计（新增表+索引）、API 接口定义、文件存储方案、后端/前端模块设计、与现有系统的集成点、安全设计（MIME校验/UUID存储/路径穿越防护）
+
+2. docs/specs/features/file-knowledge/test-plan.md — 测试方案
+   包含：测试策略（单元/集成/E2E 范围与覆盖目标）、测试环境要求、质量标准、测试工具选型
+   请调度 qa-agent 完成
+
+3. docs/specs/features/file-knowledge/test-cases.md — 测试用例集
+   包含：结构化用例表（用例ID、所属模块、前置条件、操作步骤、预期结果、优先级P0-P3），覆盖正向/异常/边界场景
+   请调度 qa-agent 完成
+
+测试目录规范：实现阶段的 E2E 脚本放 testing/e2e/，集成测试放 testing/integration/，报告放 testing/reports/。
+
+三份文档全部完成后，输出摘要并停止，等待架构师审批。

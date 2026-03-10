@@ -1,0 +1,11 @@
+上次会话超时中断。后端和前端编码已完成（编译/构建通过），但 Close Loop 尚未执行。
+
+请从 Close Loop 的第一步开始继续：
+
+1. 代码评审（调度 code-reviewer）：审查 feature branch 相对 main 的变更
+2. 架构验收（调度 arch-agent）：对照 docs/specs/features/file-knowledge/tech.md
+3. 测试验证（调度 qa-agent）：按 test-cases.md 执行，E2E 放 testing/e2e/，集成测试放 testing/integration/，报告放 testing/reports/
+4. 产品验收（调度 pm-agent）：对照 requirements.md 和 product.md
+
+后端用 H2 profile 启动。E2E 需要先启动前后端服务。
+完成后输出 workspace/final-report.json。

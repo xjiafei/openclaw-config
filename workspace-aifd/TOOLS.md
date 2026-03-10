@@ -19,6 +19,26 @@ cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
   -p '审批反馈 + 继续下一阶段'"
 ```
 
+### 长任务执行（推荐）
+Claude Code 长任务（尤其是 Close Loop）必须用 tmux 托管，不受 exec timeout 限制：
+```bash
+# 启动（新会话 / 恢复会话）
+skills/pipeline/run_claude.sh <project_path> <session_id> <prompt_file> [new|resume]
+
+# 监控状态（返回 RUNNING/DONE/UNKNOWN）
+skills/pipeline/run_claude.sh status <tmux_session>
+
+# 查看最新输出
+skills/pipeline/run_claude.sh log <tmux_session>
+
+# 终止
+skills/pipeline/run_claude.sh kill <tmux_session>
+```
+进程完成后写入 `/tmp/claude-run-<tmux_session>.done`（内含退出码），
+输出日志在 `/tmp/claude-run-<tmux_session>.log`。
+
+**规则：预计超过 10 分钟的 Claude Code 任务必须用 run_claude.sh，禁止直接 exec 调用。**
+
 ### 回退方案
 如果 `--resume` 失败：
 1. 尝试 `--continue`（恢复最近会话）
