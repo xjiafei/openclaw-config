@@ -82,9 +82,9 @@ cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
 |-----------|-------------|-------------|
 | requirements | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
 | product | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
-| tech | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批 |
-| implementation | ❌ 自动闭环 | Claude Code 内部调度 subagent 完成：代码评审 → 架构验收 → 测试 → 产品验收 |
-| 闭环完成 | ❌ | 读取 final-report.json → 通知用户结果 |
+| tech | ✅ | 自检循环（Review Loop）→ 飞书通知用户审批。技术设计阶段必须同时产出 test-plan.md（测试方案）和 test-cases.md（测试用例集） |
+| implementation | ❌ 自动闭环 | Claude Code 内部调度 subagent 完成：代码评审 → 架构验收 → 按 test-cases.md 执行测试 → 产品验收 |
+| 闭环完成 | ❌ | 读取 final-report.json + workspace/test-results.md → 通知用户结果 |
 
 #### 3.5 会话恢复失败的回退
 如果 `--resume` 失败（会话丢失）：

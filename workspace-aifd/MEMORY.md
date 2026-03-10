@@ -11,3 +11,8 @@
 
 ## 质量模式
 （初始化，尚无记录）
+
+## 流程改进
+- 技术设计阶段必须由 qa-agent 产出 test-plan.md 和 test-cases.md，不能只靠检查清单事后验（2026-03-10）
+- 产出责任链：主代理写 tech.md → 调度 qa-agent 写测试方案和用例集 → 三份文档一起进自检循环 → 一起提交审批（2026-03-10）
+- 实现阶段 qa-agent 按 test-cases.md 逐条执行，结果落盘到 workspace/test-results.md（2026-03-10）

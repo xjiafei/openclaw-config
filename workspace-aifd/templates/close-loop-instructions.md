@@ -57,7 +57,7 @@
     - 前端：启动前端开发服务器（后台运行）
     - Playwright：npx playwright install --with-deps（如未安装）
 
-    调度 qa-agent，传入："执行全量测试（单元测试 + Playwright E2E），输出结果到 workspace/test-result.json"
+    调度 qa-agent，传入："按照 docs/specs/test-plan.md 的测试策略和 docs/specs/test-cases.md 的用例集执行全量测试（单元测试 + Playwright E2E）。目录规范：E2E 脚本和 playwright.config 放 testing/e2e/，集成测试脚本放 testing/integration/，测试数据放 testing/data/，后端单元测试保持 Maven 约定位置。输出结构化结果到 workspace/test-result.json，用例执行明细到 testing/reports/test-results.md（逐条标注通过/失败），测试报告到 testing/reports/"
     读取返回结果：
     - 有失败测试/Bug → 判断是后端还是前端问题
       → 调度对应开发 agent，传入：

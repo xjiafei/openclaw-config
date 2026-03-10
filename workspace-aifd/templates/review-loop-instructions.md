@@ -1,5 +1,43 @@
 # Review Loop 自检循环指令
 
+## 阶段产出责任
+
+每个阶段有明确的产出物和负责角色：
+
+| 阶段 | 产出物 | 负责角色 | 输出路径 |
+|------|--------|---------|---------|
+| 需求分析 | requirements.md | 主代理 | docs/specs/requirements.md |
+| 产品设计 | product.md | 主代理 | docs/specs/product.md |
+| 技术设计 | tech.md | 主代理 | docs/specs/tech.md |
+| 技术设计 | test-plan.md（测试方案） | 主代理调度 **qa-agent** | docs/specs/test-plan.md |
+| 技术设计 | test-cases.md（测试用例集） | 主代理调度 **qa-agent** | docs/specs/test-cases.md |
+
+### 技术设计阶段特殊流程
+
+技术设计阶段完成 tech.md 后，**必须先调度 qa-agent** 产出测试方案和测试用例集，再进入自检循环：
+
+1. 主代理完成 tech.md 初稿
+2. 调度 qa-agent，prompt：
+   ```
+   请基于以下文档设计测试方案和测试用例集：
+   - 需求文档：docs/specs/requirements.md
+   - 产品设计：docs/specs/product.md
+   - 技术设计：docs/specs/tech.md
+
+   产出要求：
+   1. docs/specs/test-plan.md — 测试方案：测试策略（单元/集成/E2E 的范围与覆盖目标）、测试环境要求、质量标准（覆盖率目标、通过率）、测试工具选型
+   2. docs/specs/test-cases.md — 测试用例集：结构化用例表，每条包含用例 ID、所属模块、前置条件、操作步骤、预期结果、优先级（P0-P3），覆盖正向/异常/边界场景
+
+   测试目录规范（必须在测试方案中明确）：
+   - 后端单元测试：遵循 Maven/Gradle 约定，放 {backend}/src/test/
+   - E2E 测试脚本 + playwright.config：testing/e2e/
+   - 集成测试脚本：testing/integration/
+   - 测试数据/fixtures：testing/data/
+   - 测试报告：testing/reports/
+   ```
+3. qa-agent 产出完成后，三份文档（tech.md + test-plan.md + test-cases.md）一起进入自检循环
+4. 自检时 checklist 包含 T8（测试方案）和 T9（测试用例集）检查项
+
 ## 自检流程
 
 每个需要审批的阶段（需求分析、产品设计、技术设计）完成文档初稿后，你必须执行以下自检循环：

@@ -43,6 +43,18 @@
       "title": "部署与运维",
       "criteria": "包含部署方案、环境配置、监控策略、日志策略的基本说明",
       "passes": false
+    },
+    {
+      "id": "T8",
+      "title": "测试方案",
+      "criteria": "包含测试策略（单元/集成/E2E 的范围与目标）、测试环境说明、质量标准（覆盖率目标、通过率要求）",
+      "passes": false
+    },
+    {
+      "id": "T9",
+      "title": "测试用例集",
+      "criteria": "输出结构化测试用例集（docs/specs/test-cases.md），覆盖核心功能的正向、异常、边界场景，每条用例有 ID、前置条件、步骤、预期结果",
+      "passes": false
     }
   ],
   "minIterations": 2
