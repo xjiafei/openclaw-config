@@ -1,29 +1,32 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# run_claude.sh — 在 tmux 中运行 Claude Code 长任务
-# 进程不受 exec timeout 限制，通过轮询产出文件监控状态
+# run_claude.sh — 在后台运行 Claude Code 长任务
+#
+# 解决问题：
+#   1. exec timeout 会 SIGTERM 杀进程 → 用 nohup 脱离
+#   2. prompt 含特殊字符被 shell 解释 → 用 stdin pipe 传入
+#   3. prompt 文件在 root 目录，claw 无法读取 → 复制到 /tmp
+#   4. su - claw 环境不完整 → 生成独立 runner 脚本
 #
 # 用法：
 #   run_claude.sh <project_path> <session_id> <prompt_file> [new|resume]
+#   run_claude.sh status <run_id>
+#   run_claude.sh log <run_id>
+#   run_claude.sh kill <run_id>
 #
 # 产出：
-#   /tmp/claude-run-<tmux_session>.pid   — Claude Code PID
-#   /tmp/claude-run-<tmux_session>.log   — 输出日志
-#   /tmp/claude-run-<tmux_session>.done  — 完成标记（退出码写入）
-#
-# 监控：
-#   run_claude.sh status <tmux_session>  — 检查运行状态
-#   run_claude.sh log <tmux_session>     — 查看最新输出
-#   run_claude.sh kill <tmux_session>    — 终止运行
+#   /tmp/claude-run-<run_id>.pid   — Claude Code PID
+#   /tmp/claude-run-<run_id>.log   — 输出日志
+#   /tmp/claude-run-<run_id>.done  — 完成标记（退出码）
 
 ACTION=${1:-}
 
 # --- 状态查询模式 ---
 if [ "$ACTION" = "status" ]; then
-  TMUX_SESSION=${2:?tmux_session required}
-  DONE_FILE="/tmp/claude-run-${TMUX_SESSION}.done"
-  PID_FILE="/tmp/claude-run-${TMUX_SESSION}.pid"
+  RUN_ID=${2:?run_id required}
+  DONE_FILE="/tmp/claude-run-${RUN_ID}.done"
+  PID_FILE="/tmp/claude-run-${RUN_ID}.pid"
   if [ -f "$DONE_FILE" ]; then
     EXIT_CODE=$(cat "$DONE_FILE")
     echo "DONE exit_code=$EXIT_CODE"
@@ -31,16 +34,19 @@ if [ "$ACTION" = "status" ]; then
     ELAPSED=$(ps -p "$(cat "$PID_FILE")" -o etime= 2>/dev/null | tr -d ' ')
     echo "RUNNING pid=$(cat "$PID_FILE") elapsed=$ELAPSED"
   else
-    echo "UNKNOWN (no pid file or process dead)"
+    echo "DEAD (process gone, no done file)"
+    # 检查是否有日志可供诊断
+    [ -f "/tmp/claude-run-${RUN_ID}.log" ] && echo "Log exists: $(wc -c < /tmp/claude-run-${RUN_ID}.log) bytes"
   fi
   exit 0
 fi
 
 if [ "$ACTION" = "log" ]; then
-  TMUX_SESSION=${2:?tmux_session required}
-  LOG_FILE="/tmp/claude-run-${TMUX_SESSION}.log"
+  RUN_ID=${2:?run_id required}
+  LOG_FILE="/tmp/claude-run-${RUN_ID}.log"
+  LINES=${3:-50}
   if [ -f "$LOG_FILE" ]; then
-    tail -50 "$LOG_FILE"
+    tail -"$LINES" "$LOG_FILE"
   else
     echo "No log file found"
   fi
@@ -48,12 +54,13 @@ if [ "$ACTION" = "log" ]; then
 fi
 
 if [ "$ACTION" = "kill" ]; then
-  TMUX_SESSION=${2:?tmux_session required}
-  PID_FILE="/tmp/claude-run-${TMUX_SESSION}.pid"
-  if [ -f "$PID_FILE" ]; then
-    kill "$(cat "$PID_FILE")" 2>/dev/null && echo "Killed" || echo "Process already dead"
+  RUN_ID=${2:?run_id required}
+  PID_FILE="/tmp/claude-run-${RUN_ID}.pid"
+  if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+    kill "$(cat "$PID_FILE")" 2>/dev/null && echo "Killed pid=$(cat "$PID_FILE")"
+  else
+    echo "Process not running"
   fi
-  tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
   exit 0
 fi
 
@@ -63,50 +70,54 @@ SESSION_ID=${2:?session_id required}
 PROMPT_FILE=${3:?prompt_file required}
 MODE=${4:-resume}  # new or resume
 
-TMUX_SESSION="cc-$(echo "$SESSION_ID" | cut -c1-8)"
-LOG_FILE="/tmp/claude-run-${TMUX_SESSION}.log"
-PID_FILE="/tmp/claude-run-${TMUX_SESSION}.pid"
-DONE_FILE="/tmp/claude-run-${TMUX_SESSION}.done"
+RUN_ID=$(echo "$SESSION_ID" | cut -c1-8)
+LOG_FILE="/tmp/claude-run-${RUN_ID}.log"
+PID_FILE="/tmp/claude-run-${RUN_ID}.pid"
+DONE_FILE="/tmp/claude-run-${RUN_ID}.done"
+PROMPT_TMP="/tmp/claude-prompt-${RUN_ID}.txt"
 
 # 清理旧状态
 rm -f "$LOG_FILE" "$PID_FILE" "$DONE_FILE"
 
-# 构建 claude 命令
+# 复制 prompt 到 claw 可读的位置（解决 /root 目录 700 权限问题）
+cp "$PROMPT_FILE" "$PROMPT_TMP"
+chmod 644 "$PROMPT_TMP"
+
+# 构建 claude 参数
 if [ "$MODE" = "new" ]; then
   CLAUDE_FLAG="--session-id $SESSION_ID"
 else
   CLAUDE_FLAG="--resume $SESSION_ID"
 fi
 
-# 创建 runner 脚本（tmux 会执行这个）
-RUNNER="/tmp/claude-runner-${TMUX_SESSION}.sh"
-cat > "$RUNNER" << SCRIPT
+# 生成 runner 脚本（避免 shell 嵌套引号问题）
+RUNNER="/tmp/claude-runner-${RUN_ID}.sh"
+cat > "$RUNNER" << ENDSCRIPT
 #!/usr/bin/env bash
+# 加载 claw 用户环境
 source /home/claw/.bashrc 2>/dev/null || true
 export PATH=/root/.nvm/versions/node/v22.22.0/bin:\$PATH
 cd "$PROJECT_PATH"
 
-# 记录 PID
-echo \$\$ > "$PID_FILE"
-
-# 运行 Claude Code
-claude --print --dangerously-skip-permissions \\
-  $CLAUDE_FLAG \\
-  -p "\$(cat $PROMPT_FILE)" \\
-  > "$LOG_FILE" 2>&1
+# 通过 stdin pipe 传入 prompt（避免特殊字符被 shell 解释）
+cat "$PROMPT_TMP" | claude --print --dangerously-skip-permissions $CLAUDE_FLAG
 
 # 记录退出码
 echo \$? > "$DONE_FILE"
-SCRIPT
+ENDSCRIPT
 chmod +x "$RUNNER"
+chown claw:claw "$RUNNER"
 
-# 杀掉同名旧 tmux 会话
-tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
+# 以 claw 用户在后台运行，nohup 脱离终端
+nohup su - claw -c "$RUNNER" > "$LOG_FILE" 2>&1 &
+RUNNER_PID=$!
 
-# 在 tmux 中以 claw 用户启动
-tmux new-session -d -s "$TMUX_SESSION" "su - claw -c '$RUNNER'"
+# 等待 claude 进程实际启动（su 是包装层）
+sleep 3
+CLAUDE_PID=$(pgrep -P "$(pgrep -P $RUNNER_PID 2>/dev/null || echo 0)" -f "claude" 2>/dev/null || echo "$RUNNER_PID")
+echo "$RUNNER_PID" > "$PID_FILE"
 
-echo "STARTED tmux_session=$TMUX_SESSION log=$LOG_FILE"
-echo "Monitor: run_claude.sh status $TMUX_SESSION"
-echo "Logs:    run_claude.sh log $TMUX_SESSION"
-echo "Kill:    run_claude.sh kill $TMUX_SESSION"
+echo "STARTED run_id=$RUN_ID pid=$RUNNER_PID log=$LOG_FILE"
+echo "Monitor: $(basename "$0") status $RUN_ID"
+echo "Logs:    $(basename "$0") log $RUN_ID"
+echo "Kill:    $(basename "$0") kill $RUN_ID"

@@ -1,0 +1,18 @@
+你在一个已有的个人知识库管理系统中，文件知识管理特性的后端和前端代码已经编写完成，代码评审和架构验收已通过。
+
+现在请完成以下剩余工作：
+
+1. 运行后端测试：cd knowledge-backend && mvn test，修复失败的测试
+
+2. 运行前端构建：cd knowledge-frontend && npm run build，确保无错误
+
+3. 按 docs/specs/features/file-knowledge/test-cases.md 的用例，运行集成测试：
+   - 先确保后端服务在运行（H2 profile）：cd knowledge-backend && mvn spring-boot:run -Dspring-boot.run.profiles=h2 &
+   - 用 curl 测试各 API 端点
+   - 测试报告输出到 testing/reports/file-knowledge-test-results.md
+
+4. git add -A && git commit -m "feat(file-knowledge): tests complete"
+
+5. 输出测试结果汇总
+
+注意：npm/npx 路径是 /root/.nvm/versions/node/v22.22.0/bin/
