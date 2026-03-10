@@ -82,8 +82,9 @@ Claude Code 退出后，OpenClaw 检查 `{project_path}/workspace/checklist.json
 ### 初始化
 1. 生成 feature_id（格式：F001、F002...递增）
 2. 创建 feature branch：`git checkout -b feature/{feature_id}-{name} main`
-3. 创建增量文档目录：`mkdir -p docs/specs/features/{feature_id}/`
-4. 设置 pipeline.json：
+3. 创建增量文档目录（**必须使用 project_write.sh 确保权限归 claw**）：
+   `skills/pipeline/project_write.sh {project_path} mkdir docs/specs/features/{feature_id}`
+4. 设置 pipeline.json（同样通过 project_write.sh 或操作后 chown）：
    - `is_incremental: true`
    - `feature_id`、`feature_name`、`feature_branch`
    - `base_branch: "main"`

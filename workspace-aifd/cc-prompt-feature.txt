@@ -1,0 +1,31 @@
+你的任务是为个人知识库管理系统完成一个增量特性的全流程交付。
+
+## 特性需求
+给个人知识库管理系统增加文件类型的知识，包括：
+1. 文件上传（支持常见文件格式）
+2. 文件管理（查看、下载、删除）
+
+## 项目上下文
+- 这是增量特性，在 feature/file-knowledge-upload 分支上工作
+- 现有系统已有：笔记/文章管理、标签/分类体系、全文搜索、Markdown 编辑
+- 技术栈：Spring Boot + Vue + MySQL
+- 全量设计文档在 docs/specs/（requirements.md、product.md、tech.md）
+- 增量文档放 docs/specs/features/file-knowledge/
+
+## 项目记忆
+- 三次审批（需求/产品/技术）均一次通过，无特殊修改意见
+- 后端代码在 knowledge-backend/，前端在 knowledge-frontend/
+- 测试代码统一放 testing/ 目录下（E2E 放 testing/e2e/，集成测试放 testing/integration/，报告放 testing/reports/）
+- 后端单元测试遵循 Maven 约定放 knowledge-backend/src/test/
+
+## 用户偏好
+- 技术设计阶段必须同时输出测试方案（test-plan.md）和测试用例集（test-cases.md）
+- 实现阶段测试需按用例集执行，结果落盘到 testing/reports/test-results.md
+
+## 审批检查点
+1. 完成需求分析后，输出 docs/specs/features/file-knowledge/requirements.md 摘要并停止，等待架构师审批
+2. 审批通过后继续产品设计，输出 docs/specs/features/file-knowledge/product.md 摘要并停止
+3. 审批通过后继续技术设计，同时调度 qa-agent 输出 test-plan.md 和 test-cases.md，三份文档摘要一起输出并停止
+4. 技术设计审批通过后，一路完成实现和测试（Close Loop）
+
+请从需求分析开始。

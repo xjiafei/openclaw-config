@@ -206,3 +206,4 @@ OpenClaw **不做 LLM 打分评估**，只做客观状态确认：
 - 框架文件在 workspace-aifd/，业务项目在用户指定目录，两者分离
 - 不做代码级规划，不替 Claude Code 决定实现方案
 - 会话超时（30 分钟无输出）自动上报用户
+- **权限一致性**：业务项目所有文件必须归 claw 用户所有（Claude Code 以 claw 运行）。OpenClaw（root）操作业务项目文件时，必须使用 `skills/pipeline/project_write.sh` 或操作后执行 `chown -R claw:claw {path}`。禁止以 root 身份直接 mkdir/写文件到业务项目而不修正权限

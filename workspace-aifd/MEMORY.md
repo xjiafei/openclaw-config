@@ -16,3 +16,9 @@
 - 技术设计阶段必须由 qa-agent 产出 test-plan.md 和 test-cases.md，不能只靠检查清单事后验（2026-03-10）
 - 产出责任链：主代理写 tech.md → 调度 qa-agent 写测试方案和用例集 → 三份文档一起进自检循环 → 一起提交审批（2026-03-10）
 - 实现阶段 qa-agent 按 test-cases.md 逐条执行，结果落盘到 workspace/test-results.md（2026-03-10）
+
+## 权限问题教训
+- OpenClaw 以 root 运行，Claude Code 以 claw 运行。root 直接在业务项目目录中 mkdir/写文件会导致 claw 无权操作，Claude Code 被迫换路径或报错（2026-03-10）
+- 根因：增量特性初始化时 OpenClaw 用 Python/mkdir 直接创建 docs/specs/features/ 子目录，未 chown 给 claw
+- 修复：新增 skills/pipeline/project_write.sh 作为统一入口，所有操作后自动 chown；SOUL.md 约束中新增"权限一致性"条款
+- 教训：凡是 OpenClaw 和 Claude Code 共享操作的目录，必须确保权限一致
