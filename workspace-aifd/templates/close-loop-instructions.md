@@ -109,9 +109,10 @@ Close Loop 在 {中断阶段} 被中断。以下是检查点状态：
 
 ```
 [0] 编码阶段
-    调度后端开发 agent → 完成后端编码
-    调度前端开发 agent → 完成前端编码
-    确认构建通过（运行项目对应的构建命令）
+    调度后端开发 agent → 验证输出契约：mvn compile 通过 + mvn test 通过 + be-build-result.txt 存在
+    调度前端开发 agent → 验证输出契约：npm run build 通过 + fe-build-result.txt 存在
+    如输出契约不满足 → 将具体问题反馈给 agent，要求修正（最多 3 次）
+    更新 stage-status.json + checkpoint.json
         ↓
 [1] 代码评审（code-reviewer）
     调度 code-reviewer，传入："审查最新代码变更，输出结果到 workspace/code-review-result.json"
@@ -137,13 +138,33 @@ Close Loop 在 {中断阶段} 被中断。以下是检查点状态：
     - 前端：启动前端开发服务器（后台运行）
     - Playwright：npx playwright install --with-deps（如未安装）
 
-    调度 qa-agent，传入："按照 docs/specs/test-plan.md 的测试策略和 docs/specs/test-cases.md 的用例集执行全量测试（单元测试 + Playwright E2E）。目录规范：E2E 脚本和 playwright.config 放 testing/e2e/，集成测试脚本放 testing/integration/，测试数据放 testing/data/，后端单元测试保持 Maven 约定位置。输出结构化结果到 workspace/test-result.json，用例执行明细到 testing/reports/test-results.md（逐条标注通过/失败），测试报告到 testing/reports/"
-    读取返回结果：
-    - 有失败测试/Bug → 判断是后端还是前端问题
-      → 调度对应开发 agent，传入：
-        "请根据以下测试报告修复 Bug：{Bug 列表}"
-      → 修复后重新调度 qa-agent（最多 3 次）
-    - 通过 → 进入下一步
+    调度 qa-agent（模式 B），传入：
+    "按照 docs/specs/test-plan.md 策略和 docs/specs/test-cases.md 用例执行全量测试。
+     三类测试必须全部执行：单元测试 + API 集成测试 + Playwright E2E。
+     输出：workspace/test-result.json + testing/reports/test-results.md（逐条标注通过/失败）"
+
+    读取 workspace/test-result.json：
+    - 有 Bug → **进入 Bug 修复子循环**（见下方）
+    - 全部通过 → 进入下一步
+
+    #### Bug 修复子循环（最多 3 轮）
+
+    ```
+    while (test-result.json 有 Bug 且 轮次 < 3):
+      1. 从 test-result.json 的 bugs[] 提取 Bug 列表
+      2. 按文件类型判断归属（.java→后端, .vue→前端）
+      3. 调度对应开发 agent（Bug 修复模式），传入：
+         "请修复以下 Bug：{Bug 列表，含 bugId/description/steps/file}
+          修复后必须跑全量测试确认不引入新问题。输出 workspace/fix-report.json"
+      4. 验证 fix-report.json：buildPassed=true && testPassed=true
+      5. 重新调度 qa-agent（模式 B）执行回归测试
+      6. 更新 checkpoint.json 的 testing.subTasks.bugFixes[]
+    ```
+
+    **铁律**：
+    - Bug 修复由开发 agent 完成，不是 qa-agent 或编排者
+    - 每次修复后必须重新跑完整测试（不只是修复的那个用例）
+    - 开发 agent 修 Bug 时必须同时补充对应的单元测试
         ↓
 [4] 产品验收（pm-agent）
     调度 pm-agent，传入："对照 docs/specs/requirements.md 和 docs/specs/product.md，用 Playwright 逐个用户故事走查验收，输出结果到 workspace/pm-acceptance.json"
@@ -155,7 +176,13 @@ Close Loop 在 {中断阶段} 被中断。以下是检查点状态：
     - 通过 → 闭环完成
         ↓
 [5] 输出最终报告
-    生成 workspace/final-report.json → 退出
+    生成 workspace/final-report.json
+    更新 stage-status.json（status=completed, outputs=[final-report.json]）
+    更新 checkpoint.json（所有阶段 done）
+    git add -A && git commit
+    → 退出
+
+**每个阶段切换时必须**：更新 stage-status.json + checkpoint.json + git commit
 ```
 
 ## 调度要点

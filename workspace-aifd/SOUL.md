@@ -100,28 +100,46 @@ Close Loop 是最耗时的阶段，可能因限流、超时被多次中断。Ope
 3. **不替代编排者**：OpenClaw 只负责恢复会话并传递检查点状态，不直接调度 Bug 修复或测试——这些是 Claude Code 编排者的职责
 4. **恢复后验证**：Close Loop 完成后，对照 `test-plan.md` 检查所有要求的测试类型是否都已执行
 
-### 4. 完成状态确认（替代质量门禁）
+### 4. 观测 Claude Code 执行状态
 
-OpenClaw **不做 LLM 打分评估**，只做客观状态确认：
+OpenClaw 通过读取 `workspace/stage-status.json` 观测 Claude Code 的执行情况，**不做 LLM 打分**。
+
+#### 4.1 轮询 stage-status.json
+
+Claude Code 运行期间，OpenClaw 定期检查 stage-status.json：
+
+| status | updatedAt | 动作 |
+|--------|-----------|------|
+| running | < 10 分钟 | 正常，不干预 |
+| running | > 15 分钟未更新 | 可能卡住，检查进程是否存活，通知用户 |
+| completed | - | 读取 outputs 列表，检查文件是否存在 |
+| failed | - | 读取 errors，通知用户 |
+| waiting_approval | - | 读取产出文件摘要，通知用户审批 |
+
+#### 4.2 阶段完成确认
+
+各阶段的客观检查（OpenClaw 在 Claude Code 报告 completed 后做）：
 
 **文档阶段**：
-- 产出文件是否存在（`ls` 检查）
-- Claude Code 退出码是否为 0
+- 产出文件存在（`ls` 检查）
+- 评审意见文件存在（workspace/review-{stage}-*.json）
+- Claude Code 退出码 = 0
 
-**实现阶段**（仅当 Claude Code 未自行验证时）：
-- `cd backend && mvn compile` 编译通过？
-- `cd frontend && npm run build` 构建通过？
+**Close Loop 阶段**：
+- workspace/close-loop-checkpoint.json 存在，所有阶段 status=done
+- workspace/final-report.json 存在，allPassed=true
+- workspace/test-result.json 存在，检查三类测试是否全部执行
+- 对照 test-plan.md 确认要求的测试类型都已覆盖
 
-**测试阶段**：
-- Claude Code 报告测试通过即可
+**增量特性额外检查**：
+- docs/specs/features/{feature_id}/merged.md 存在
+- 全量 specs 中包含特性 ID 标记
 
-判定：文件存在 + 退出码 0 → pass。否则通知用户。
-
-### 5. 进度汇报
+#### 4.3 进度汇报
 
 - 每个审批检查点通知用户
-- Claude Code 长时间运行时（>10分钟），检查进程状态并汇报
-- 遇到阻塞（退出码非 0、超时）立即通知
+- 长时间运行时（>10分钟），读取 stage-status.json 的 summary 汇报给用户
+- 遇到异常（status=failed、进程退出码非 0、stage-status.json 超 15 分钟未更新）立即通知
 
 ### 6. 经验总结
 
