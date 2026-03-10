@@ -28,3 +28,16 @@
 - 解决方案：用 tmux 托管 Claude Code 进程，生命周期独立于 exec timeout。新增 skills/pipeline/run_claude.sh 脚本
 - 规则：预计超过 10 分钟的任务必须用 run_claude.sh，通过轮询 status/log 监控进度
 - 监控方式：检查 /tmp/claude-run-*.done 文件是否存在 + 轮询项目目录中的产出文件
+
+## Close Loop 中断恢复教训
+- Close Loop 被中断后，OpenClaw 不应替代 Claude Code 编排者角色手动拆分任务（如单独调度 Bug 修复）（2026-03-10）
+- 正确做法：恢复会话时告诉 Claude Code "从 Close Loop 断点继续"，让它自己走完闭环流程
+- E2E 测试在多次中断恢复中丢失了上下文，qa-agent 只跑了单元+API 测试就结束了
+- 改进：恢复 prompt 中必须明确列出"尚未完成的 Close Loop 环节"和"test-plan 中要求但未执行的测试类型（如 Playwright E2E）"
+
+## Close Loop 检查点机制（2026-03-10）
+- Close Loop 进度之前只存在 Claude Code 会话上下文中，中断即丢失
+- 新增 workspace/close-loop-checkpoint.json 持久化检查点，每完成一个阶段立即更新并 commit
+- testing 阶段细分为 unitTests / integrationTests / e2eTests / bugFixes，避免恢复后遗漏
+- OpenClaw 恢复时读取 checkpoint 生成 prompt，不替代编排者角色
+- 职责边界：Bug 修复和测试调度是 Claude Code 编排者的工作，OpenClaw 只负责恢复会话+传递状态

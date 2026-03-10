@@ -4,6 +4,86 @@
 
 你是编排者（orchestrator），负责调度各 subagent 完成编码、评审、测试和验收的闭环。你不亲自写代码，所有编码和修复工作交给开发 agent。
 
+## ⚠️ 检查点机制（必须遵守）
+
+Close Loop 可能因限流、超时等原因被中断。为确保恢复后能继续，**每完成一个阶段必须更新检查点文件**。
+
+### 检查点文件：`workspace/close-loop-checkpoint.json`
+
+**启动 Close Loop 时**，先检查该文件是否存在：
+- 存在 → 从最后一个未完成的阶段继续（不要重做已完成的阶段）
+- 不存在 → 初始化检查点并从头开始
+
+**每个阶段完成后**，立即更新检查点文件并 `git commit`：
+
+```json
+{
+  "startedAt": "ISO时间",
+  "totalLoops": 0,
+  "stages": {
+    "coding": {
+      "status": "done",
+      "completedAt": "ISO时间",
+      "summary": "后端+前端编码完成，构建通过",
+      "backend_compile": true,
+      "frontend_build": true
+    },
+    "codeReview": {
+      "status": "done",
+      "completedAt": "ISO时间",
+      "iterations": 2,
+      "summary": "2个MAJOR修复后通过",
+      "resultFile": "workspace/code-review-result.json"
+    },
+    "archAcceptance": {
+      "status": "done",
+      "completedAt": "ISO时间",
+      "iterations": 1,
+      "summary": "架构验收通过",
+      "resultFile": "workspace/arch-acceptance.json"
+    },
+    "testing": {
+      "status": "in_progress",
+      "completedAt": null,
+      "iterations": 1,
+      "summary": null,
+      "resultFile": "workspace/test-result.json",
+      "subTasks": {
+        "unitTests": { "status": "done", "passed": 44, "failed": 0 },
+        "integrationTests": { "status": "done", "passed": 9, "failed": 1, "bugs": ["TC-F-019"] },
+        "e2eTests": { "status": "pending", "passed": 0, "failed": 0 },
+        "bugFixes": [
+          { "bugId": "TC-F-019", "status": "done", "fixCommit": "6eb49c6" }
+        ]
+      }
+    },
+    "pmAcceptance": {
+      "status": "pending",
+      "completedAt": null
+    }
+  },
+  "unresolved": []
+}
+```
+
+### 检查点更新规则
+
+1. **每完成一个阶段** → 更新该阶段 status 为 "done" + completedAt + summary → `git commit`
+2. **阶段内发现 Bug** → 记录到 `subTasks.bugFixes[]`，调度开发 agent 修复，修复后更新 status
+3. **被中断后恢复** → 读取 checkpoint，跳过已 done 的阶段，从第一个非 done 阶段继续
+4. **testing 阶段细分** → 必须记录 unitTests / integrationTests / e2eTests 各自的完成状态，避免恢复后遗漏
+
+### 恢复时的 prompt 模板（OpenClaw 使用）
+
+当 Close Loop 被中断需要恢复时，OpenClaw 读取 checkpoint 生成恢复 prompt：
+```
+Close Loop 在 {中断阶段} 被中断。以下是检查点状态：
+{checkpoint.json 内容}
+
+请从 {第一个未完成阶段} 继续执行 Close Loop。
+已完成的阶段无需重做。testing 阶段中，{已完成的测试类型} 已通过，请继续执行 {未完成的测试类型}。
+```
+
 ## 角色分工
 
 | 角色 | Agent | 职责 |

@@ -1,0 +1,15 @@
+文件知识管理特性的后端和前端代码已完成，单元测试和 API 集成测试通过。但缺少 Playwright E2E 测试。
+
+请完成：
+1. 根据 docs/specs/features/file-knowledge/test-cases.md 中的 E2E 相关用例，编写 Playwright 测试脚本
+2. 测试脚本放在 testing/e2e/file-knowledge.spec.js
+3. 启动后端服务（H2 profile）和前端 dev server
+4. 安装 Playwright 浏览器（如需要）：npx playwright install chromium --with-deps
+5. 运行 Playwright 测试
+6. 如果有失败，修复代码后重新运行
+7. 将 E2E 测试结果追加到 testing/reports/file-knowledge-test-results.md
+8. git add -A && git commit
+9. 输出最终结果
+
+注意：npm/npx 路径是 /root/.nvm/versions/node/v22.22.0/bin/
+Playwright 配置在 knowledge-frontend/playwright.config.js（baseURL: http://localhost:5173）

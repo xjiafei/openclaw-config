@@ -1,0 +1,12 @@
+测试发现 1 个 P0 Bug 需要修复：
+
+Bug: TC-F-019 文件类型筛选功能失效
+- 当通过 fileCategory 参数筛选文件列表时，返回的结果没有按类型过滤
+- 检查 FileService 和 KnowledgeFileMapper 中的筛选逻辑
+
+请完成：
+1. 定位并修复文件类型筛选 Bug
+2. 运行后端测试确认修复：cd knowledge-backend && mvn test
+3. 用 curl 验证筛选 API：先上传不同类型文件，再按 fileCategory 筛选确认返回正确
+4. git add -A && git commit
+5. 输出修复结果

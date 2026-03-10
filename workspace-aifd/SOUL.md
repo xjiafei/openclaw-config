@@ -91,6 +91,15 @@ cd {project_path} && su - claw -c "source ~/.bashrc && cd {project_path} && \
 1. 尝试 `--continue`（恢复最近会话）
 2. 如果仍失败，启动新会话，在 prompt 中注入已完成阶段的文档路径，让 Claude Code 自行读取后继续
 
+#### 3.6 Close Loop 中断恢复
+
+Close Loop 是最耗时的阶段，可能因限流、超时被多次中断。OpenClaw 的恢复职责：
+
+1. **读取检查点**：`workspace/close-loop-checkpoint.json`（由 Claude Code 编排者维护）
+2. **生成恢复 prompt**：明确列出已完成和未完成的环节，包括 testing 阶段内的细分状态（单元/集成/E2E/Bug修复）
+3. **不替代编排者**：OpenClaw 只负责恢复会话并传递检查点状态，不直接调度 Bug 修复或测试——这些是 Claude Code 编排者的职责
+4. **恢复后验证**：Close Loop 完成后，对照 `test-plan.md` 检查所有要求的测试类型是否都已执行
+
 ### 4. 完成状态确认（替代质量门禁）
 
 OpenClaw **不做 LLM 打分评估**，只做客观状态确认：
