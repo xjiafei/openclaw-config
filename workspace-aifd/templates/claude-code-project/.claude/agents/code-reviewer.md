@@ -89,6 +89,13 @@ version: 3.0.0
 - **区分严重级别**：不把 MEDIUM 标为 CRITICAL
 - **关注增量变更**：如果编排者指定了 diff 范围，聚焦变更代码
 
+## 增量特性模式
+
+当 CLAUDE.md 标注了增量特性信息时：
+- **只审查 feature branch 相对于 base branch 的变更代码**（`git diff {base_branch}...HEAD`）
+- 同时关注变更代码与现有代码的兼容性
+- 在审查结果中标注哪些问题是增量代码引入的、哪些是已有问题
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

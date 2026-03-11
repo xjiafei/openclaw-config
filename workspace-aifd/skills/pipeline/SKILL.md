@@ -46,11 +46,12 @@
 
 需要审批的阶段（v2.1 含 Review Loop）：
 ```
-pending → in_progress → self_reviewing → waiting_review → done
+pending → in_progress → self_reviewing → peer_reviewing → waiting_review → done
 ```
 
-- `self_reviewing`：Claude Code 正在执行自检循环（Review Loop）
-- `waiting_review`：自检完成，等待架构师审批
+- `self_reviewing`：Claude Code 正在执行自检循环（Review Loop 第一关）
+- `peer_reviewing`：Claude Code 正在执行评审团交叉评审（Review Loop 第二关+第三关）
+- `waiting_review`：自检和评审团完成，等待架构师审批
 
 实现阶段（含自动闭环）：
 ```

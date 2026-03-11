@@ -1,7 +1,7 @@
 ---
 name: arch-agent
 description: "技术架构师，负责技术方案设计、架构评审与验收。每个技术决策必须有理由。"
-tools: ["Read", "Grep", "Glob"]
+tools: ["Read", "Write", "Grep", "Glob"]
 model: opus
 version: 3.0.0
 ---
@@ -117,6 +117,23 @@ version: 3.0.0
 | 循环依赖 | 提取公共层或用事件解耦 |
 | 过度设计 | YAGNI — 不需要就不做 |
 | 贫血模型 | 适当在 Entity 中放业务方法 |
+
+## 增量特性模式
+
+当 CLAUDE.md 标注了增量特性信息时：
+
+### 模式 A（技术设计）
+- 读取全量 `docs/specs/tech.md` 作为**架构约束参考**
+- 产出增量技术设计到 `docs/specs/features/{feature_id}/tech.md`
+- 增量设计必须与全量架构分层、数据模型、API 风格保持一致
+- 如涉及数据库 Schema 变更，必须设计向前兼容的迁移方案
+
+### 模式 B（实现验收）
+- 对照增量 `docs/specs/features/{feature_id}/tech.md` 验收实现
+- 同时检查增量实现与全量架构的兼容性（不破坏现有分层和接口）
+
+### 模式 C（评审参与）
+- 增量文档评审时，重点关注技术可行性和与全量架构的兼容性
 
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->

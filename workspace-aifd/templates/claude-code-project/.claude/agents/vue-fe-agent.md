@@ -21,6 +21,8 @@ version: 3.0.0
 
 **启动前检查**：读取上述文件，如缺少必须文件则立即报错退出，不猜测需求。
 
+**增量特性**：当 CLAUDE.md 标注了增量特性信息时，上述路径改为 `docs/specs/features/{feature_id}/` 下的对应文件，同时读取全量 specs 作为只读上下文（确保兼容）。
+
 ## 输出契约（完成时必须产出）
 
 | 输出 | 路径 | 验证方式 |
@@ -117,15 +119,18 @@ onMounted(fetchData);
 1. **阅读 Bug 描述**：理解复现步骤、期望结果、实际结果
 2. **定位根因**：检查对应组件/store/API 层
 3. **修复代码**
-4. **验证修复**：`npm run build` 通过
-5. **输出报告**：写入 workspace/fix-report.json
+4. **补充测试**：为关键 Bug 补充组件测试（如已配置测试框架）
+5. **验证修复**：`npm run build` 通过
+6. **输出报告**：写入 workspace/fix-report.json
 
 ```json
 {
   "fixed": [
-    { "bugId": "BUG-001", "file": "path/to/file", "rootCause": "原因", "fix": "修复动作" }
+    { "bugId": "BUG-001", "file": "path/to/file", "rootCause": "原因", "fix": "修复动作", "testAdded": "test description or N/A" }
   ],
   "buildPassed": true,
+  "testPassed": true,
+  "regressionTestCount": 0,
   "notes": ""
 }
 ```
@@ -141,6 +146,13 @@ onMounted(fetchData);
 8. 重复直到构建通过
 9. 将构建结果写入 workspace/fe-build-result.txt
 10. 检查 CRITICAL 和 HIGH 级别问题
+
+## 增量特性模式
+
+当 CLAUDE.md 标注了增量特性信息时：
+- **只实现增量特性范围内的页面和组件**，不修改无关组件（除非必要的布局适配）
+- **读取全量 product.md 作为导航和交互参考**，确保增量页面融入现有结构
+- **构建必须全量通过**（不只是增量部分）
 
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->

@@ -95,7 +95,7 @@ version: 3.0.0
   "passed": true,
   "summary": "验收结果概要",
   "stories": [
-    { "id": "US-001", "title": "标题", "priority": "P0", "accepted": true, "screenshots": [] }
+    { "id": "US-001", "title": "标题", "priority": "P0", "accepted": true, "screenshots": [], "failReason": "", "ownerScope": "backend|frontend|both" }
   ],
   "uxIssues": []
 }
@@ -131,6 +131,29 @@ version: 3.0.0
 | P0 | MVP 必须有 | 没有它系统不能用 |
 | P1 | 重要但非必须 | 没有它系统能用但体验差 |
 | P2 | 锦上添花 | 有更好，没有不影响 |
+
+## 增量特性模式
+
+当 CLAUDE.md 标注了增量特性信息时：
+
+### 模式 A（需求分析）
+- 读取全量 `docs/specs/requirements.md` 作为**只读上下文**
+- 产出增量需求文档到 `docs/specs/features/{feature_id}/requirements.md`
+- 确保增量需求与全量需求不矛盾，术语和角色定义保持一致
+- 明确标注：本特性新增了什么、修改了什么、不涉及什么
+
+### 模式 B（产品设计）
+- 读取全量 `docs/specs/product.md` 作为**只读上下文**
+- 产出增量产品设计到 `docs/specs/features/{feature_id}/product.md`
+- 增量页面/交互需与全量导航结构和交互风格一致
+- 说明本特性涉及哪些现有页面的改动
+
+### 模式 C（功能验收）
+- 验收增量用户故事 + **回归走查核心流程**
+- 在 pm-acceptance.json 中标注每个未通过项的**问题归属**（前端/后端/前后端都涉及）
+
+### 模式 D（评审参与）
+- 增量文档评审时，重点关注与全量 specs 的一致性
 
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->

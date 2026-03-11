@@ -170,6 +170,23 @@ await expect(page.getByText('保存成功')).toBeVisible({ timeout: 5000 });
 | 大数据量 | 1000+ 条数据 |
 | 特殊字符 | 中文、emoji、SQL 特殊字符 |
 
+## 增量特性模式
+
+当 CLAUDE.md 标注了增量特性信息时：
+
+### 模式 A（测试设计）
+- 读取增量 specs（`docs/specs/features/{feature_id}/`）作为测试范围
+- 产出增量测试方案到 `docs/specs/features/{feature_id}/test-plan.md` 和 `test-cases.md`
+- **必须包含回归测试策略**：说明哪些现有功能需要回归测试、为什么
+
+### 模式 B（测试执行）
+- 执行增量特性的新增测试用例
+- **同时执行全量回归测试**（所有已有测试），确保没有回归
+- 在 test-result.json 中区分标注：哪些是新增测试、哪些是回归测试
+
+### 模式 C（评审参与）
+- 增量文档评审时，重点关注：增量需求是否可测试、是否遗漏回归风险
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

@@ -13,9 +13,9 @@
 
 1. 检查 Claude Code 退出码是否为 0
 2. 检查产出文件是否存在：
-   - requirements → `docs/specs/requirements.md`（或 `docs/specs/featureXXX-specs/requirements.md`）
-   - product → `docs/specs/product.md`
-   - tech → `docs/specs/tech.md`
+   - requirements → `docs/specs/requirements.md`（增量时：`docs/specs/features/{feature_id}/requirements.md`）
+   - product → `docs/specs/product.md`（增量时：`docs/specs/features/{feature_id}/product.md`）
+   - tech → `docs/specs/tech.md`（增量时：`docs/specs/features/{feature_id}/tech.md`）
 3. 检查文件非空（`wc -l` > 10）
 
 判定：退出码 0 + 文件存在且非空 → pass

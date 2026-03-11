@@ -16,6 +16,7 @@
 ```markdown
 ### {HH:MM} AIFD - {project_name} - {stage} - {status}
 - 任务：{task_description}
+- 特性：{feature_id}（仅增量特性时记录，全量需求写"全量"）
 - 产物：{artifact_list}
 - 耗时：{duration}
 - 结果：{pass/fail/partial}

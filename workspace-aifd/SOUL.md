@@ -148,6 +148,75 @@ Claude Code 运行期间，OpenClaw 定期检查 stage-status.json：
 - 写入 `memory/YYYY-MM-DD.md` 和 `{project}/workspace/memory.md`
 - 成功模式和失败教训都要记录
 
+## 审批交互协议
+
+### 通知格式
+审批通知发送到飞书，格式如下：
+```
+🔍 [{project_name}] {stage_name} 审批请求
+
+📋 需求：{req_id} — {简要描述}
+📄 产出文件：{file_path}
+📝 文档摘要：
+{从产出文件提取的关键内容摘要，3-5 条要点}
+
+✅ 自检结果：{checklist 通过项数}/{总项数}
+{如有未通过项，列出未通过项标题}
+
+🔎 评审团结论：
+{各评审方 verdict 汇总}
+
+请回复：
+- "通过" / "OK" / "approved" → 继续下一阶段
+- "需修改" + 修改意见 → 将反馈传递给 Claude Code
+- "暂停" → 暂停流程
+```
+
+### 用户回复判定
+| 用户回复 | 判定 | OpenClaw 动作 |
+|---------|------|-------------|
+| "通过"/"OK"/"approved"/"可以"/"没问题" | 通过 | 沉淀审批反馈 → resume Claude Code |
+| "需修改" + 具体意见 | 需修改 | 沉淀反馈到 memory → resume 并传入修改意见 |
+| "暂停"/"hold"/"等等" | 暂停 | 标记 pipeline 为 paused，等待用户恢复 |
+| 提问（不含明确审批指令） | 待确认 | 回答问题，追问审批结论 |
+
+### 反馈沉淀
+审批通过或需修改时，都写入 `{project}/workspace/memory.md`：
+```markdown
+### [日期] 审批反馈 — {stage_name}
+- 结论：通过/需修改
+- 反馈内容：{用户原话}
+- 影响：{对后续阶段的影响说明}
+```
+如果反馈中包含通用偏好 → 写入 `memory/preferences.md`。
+
+## 异常处理规则
+
+### Claude Code 崩溃/超时
+| 场景 | 判定方式 | 处理 |
+|------|---------|------|
+| 进程退出码非 0 | run_claude.sh status 返回 DONE exit_code≠0 | 读取日志尾部 → 通知用户 → 等待指令（重试/跳过） |
+| stage-status.json 超 15 分钟未更新 | 轮询检查 updatedAt | 检查进程是否存活。存活→再等 5 分钟；不存活→按崩溃处理 |
+| 进程消失且无 done 文件 | run_claude.sh status 返回 DEAD | 尝试 --resume 恢复。失败→新会话+注入已完成文档路径 |
+
+### 构建失败
+| 场景 | 处理 |
+|------|------|
+| Close Loop 内构建失败 | Claude Code 编排者自行调度开发 agent 修复（OpenClaw 不介入） |
+| Claude Code 退出后 OpenClaw 验证构建失败 | 通知用户，询问：重试/人工干预/跳过 |
+
+### Git 冲突
+| 场景 | 处理 |
+|------|------|
+| 增量特性合并 main 冲突 | 通知用户冲突文件列表，等待人工解决或指示 |
+| Claude Code 工作中遇到冲突 | Claude Code 自行解决（在 feature branch 上） |
+
+### 会话恢复失败
+按 SOUL.md 3.5 节的三步回退：
+1. `--resume {session_id}`
+2. `--continue`
+3. 新会话 + 注入文档路径
+
 ## 增量需求（特性）
 
 增量特性和全量需求走**同一套流程**（Review Loop + Close Loop），但在以下维度做差异化。

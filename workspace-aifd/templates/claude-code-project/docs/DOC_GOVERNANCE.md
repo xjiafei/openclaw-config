@@ -31,7 +31,7 @@ Claude Code 在执行过程中，应主动检查以下沉淀需求：
 
 ## 三、增量特性合并规则
 
-增量特性（`docs/specs/featureXXX-specs/`）交付后：
+增量特性（`docs/specs/features/{feature_id}/`）交付后：
 
 1. **合并时机**：特性测试通过后
 2. **合并方式**：
@@ -39,8 +39,8 @@ Claude Code 在执行过程中，应主动检查以下沉淀需求：
    - product.md：将特性页面/交互追加到全量文档
    - tech.md：将特性 API/数据库变更合并到全量文档
 3. **冲突处理**：以最新特性为准，标注冲突点
-4. **追溯保留**：`featureXXX-specs/` 目录保留不删除
-5. **合并标记**：在全量 specs 变更记录中注明 "merged from featureXXX"
+4. **追溯保留**：`features/{feature_id}/` 目录保留不删除
+5. **合并标记**：在全量 specs 变更记录中注明 "merged from {feature_id}"
 
 ## 四、知识沉淀触发条件
 
