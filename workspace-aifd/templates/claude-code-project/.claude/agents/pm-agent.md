@@ -155,6 +155,10 @@ version: 3.0.0
 ### 模式 D（评审参与）
 - 增量文档评审时，重点关注与全量 specs 的一致性
 
+## 知识库参考
+- 业务领域知识：`docs/knowledges/domain/`（术语表、业务规则）
+- 经验教训：`docs/knowledges/lessons-learned/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

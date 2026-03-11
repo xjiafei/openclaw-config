@@ -96,6 +96,10 @@ version: 3.0.0
 - 同时关注变更代码与现有代码的兼容性
 - 在审查结果中标注哪些问题是增量代码引入的、哪些是已有问题
 
+## 知识库参考
+- 编码规范：`docs/knowledges/standards/`
+- 架构决策：`docs/knowledges/architecture/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

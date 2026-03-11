@@ -135,6 +135,11 @@ version: 3.0.0
 ### 模式 C（评审参与）
 - 增量文档评审时，重点关注技术可行性和与全量架构的兼容性
 
+## 知识库参考
+- 架构决策记录：`docs/knowledges/architecture/`（ADR、技术债务）
+- 编码规范：`docs/knowledges/standards/`
+- 代码模式：`docs/knowledges/patterns/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

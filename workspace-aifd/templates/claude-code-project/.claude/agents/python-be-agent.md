@@ -151,6 +151,11 @@ Model           →  数据结构
 - **读取全量 tech.md 作为架构参考**，确保增量实现不破坏现有架构
 - **测试必须全量通过**（不只是增量部分）
 
+## 知识库参考
+- 编码规范：`docs/knowledges/standards/`
+- 后端模式：`docs/knowledges/patterns/backend/`
+- 业务规则：`docs/knowledges/domain/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

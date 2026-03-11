@@ -187,6 +187,11 @@ await expect(page.getByText('保存成功')).toBeVisible({ timeout: 5000 });
 ### 模式 C（评审参与）
 - 增量文档评审时，重点关注：增量需求是否可测试、是否遗漏回归风险
 
+## 知识库参考
+- 业务领域知识：`docs/knowledges/domain/`（业务规则、术语表）
+- 测试模式：`docs/knowledges/patterns/testing/`
+- 经验教训：`docs/knowledges/lessons-learned/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

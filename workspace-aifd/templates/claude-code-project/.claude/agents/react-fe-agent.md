@@ -171,6 +171,11 @@ export function StudentList({ classId, onUpdate }: Props) {
 - **读取全量 product.md 作为导航和交互参考**，确保增量页面融入现有结构
 - **构建必须全量通过**（不只是增量部分）
 
+## 知识库参考
+- 编码规范：`docs/knowledges/standards/`
+- 前端模式：`docs/knowledges/patterns/frontend/`
+- UI 规范：`docs/knowledges/ui-guidelines/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->

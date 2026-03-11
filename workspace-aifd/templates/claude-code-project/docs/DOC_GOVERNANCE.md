@@ -45,6 +45,8 @@ Claude Code 在执行过程中，应主动检查以下沉淀需求：
 ## 四、知识沉淀触发条件
 
 以下场景应触发知识沉淀到 `docs/knowledges/`：
-- 发现可复用的编码模式 → `knowledges/standards/`
+- 发现可复用的编码模式 → `knowledges/patterns/`
 - 发现领域业务规则 → `knowledges/domain/`
-- 总结出文档/设计模板 → `knowledges/templates/`
+- 做出关键技术决策 → `knowledges/architecture/`（ADR 格式）
+- 总结出编码规范 → `knowledges/standards/`
+- 踩坑并解决 → `knowledges/lessons-learned/`

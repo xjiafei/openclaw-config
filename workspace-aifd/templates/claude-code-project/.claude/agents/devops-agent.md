@@ -212,6 +212,10 @@ VITE_API_BASE=http://localhost:8080/api/v1
 - 通常不需要修改部署配置，除非新特性引入了新的服务或中间件依赖
 - 如果需要修改，确保向前兼容，不影响现有部署流程
 
+## 知识库参考
+- 架构决策：`docs/knowledges/architecture/`
+- 经验教训：`docs/knowledges/lessons-learned/`
+
 ## 业务领域要求
 <!-- DYNAMIC_INJECT_START -->
 <!-- DYNAMIC_INJECT_END -->
